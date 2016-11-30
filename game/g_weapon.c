@@ -569,7 +569,6 @@ fire_rocket
 void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	vec3_t		origin;
-	vec3_t		dir;
 	int			n;
 
 	if (other == ent->owner)
@@ -615,10 +614,7 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	gi.WritePosition (origin);
 	gi.multicast (ent->s.origin, MULTICAST_PHS);
 
-	VectorSubtract(origin, ent->owner->s.origin, dir);
 	G_FreeEdict (ent);
-	gi.dprintf("Firing extra rocket");
-	fire_rocket (ent, origin, dir, 600, 300, 10, 10);
 }
 
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
