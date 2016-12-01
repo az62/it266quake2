@@ -583,9 +583,6 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 
 	/*if (surf && (surf->flags & SURF_SKY))
 	{
-		gi.dprintf("Firing another rocket FROM THE SKY\n");
-		if (ent->owner)
-			fire_rocket (ent->owner, origin, dir, 200, 300, 10, 50);
 		G_FreeEdict (ent);
 		return;
 	}*/
@@ -621,6 +618,8 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	gi.WritePosition (origin);
 	gi.multicast (ent->s.origin, MULTICAST_PHS);
 
+
+	//RELAUNCH ROCKET
 	//move rocket launch location to nearest surface to player
 	tr = gi.trace(ent->owner->s.origin,NULL,NULL,ent->s.origin,ent->owner,MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA);	
 	VectorCopy(tr.endpos,start);
@@ -632,7 +631,9 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 
 
 	//gi.dprintf("Firing another rocket\n");
-	fire_rocket (ent->owner, start, dir, 200, 300, 10, 50);
+	if(!ent->owner->deadflag){
+		fire_rocket (ent->owner, start, dir, 10000, 300, 100, 10000);
+	}
 	G_FreeEdict (ent);
 }
 
