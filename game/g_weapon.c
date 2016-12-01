@@ -569,22 +569,31 @@ fire_rocket
 void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	vec3_t		origin;
+	vec3_t		dest;
+	vec3_t		dir;
 	int			n;
 
-	if (other == ent->owner)
-		return;
+	//if (other == ent->owner)
+	//	return;
+
+	// calculate position for the explosion entity
+	VectorMA (ent->s.origin, -0.02, ent->velocity, origin);
+	
+	VectorCopy(ent->owner->s.origin, dest);
+	VectorSet(dir,dest[0]-origin[0],dest[1]-origin[1],dest[2]-origin[2]);
+	VectorNormalize2(dir,dir);
 
 	if (surf && (surf->flags & SURF_SKY))
 	{
+		gi.dprintf("Firing another rocket FROM THE SKY\n");
+		if (ent->owner)
+			fire_rocket (ent->owner, origin, dir, 200, 300, 10, 50);
 		G_FreeEdict (ent);
 		return;
 	}
 
 	if (ent->owner->client)
 		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
-
-	// calculate position for the explosion entity
-	VectorMA (ent->s.origin, -0.02, ent->velocity, origin);
 
 	if (other->takedamage)
 	{
@@ -614,6 +623,9 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	gi.WritePosition (origin);
 	gi.multicast (ent->s.origin, MULTICAST_PHS);
 
+	gi.dprintf("Firing another rocket\n");
+	if (ent->owner)
+		fire_rocket (ent->owner, origin, dir, 200, 300, 10, 50);
 	G_FreeEdict (ent);
 }
 
