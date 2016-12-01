@@ -569,8 +569,10 @@ fire_rocket
 void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	vec3_t		origin;
+	vec3_t		start;
 	vec3_t		dest;
 	vec3_t		dir;
+	trace_t		tr;
 	int			n;
 
 	//if (other == ent->owner)
@@ -579,8 +581,10 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	// calculate position for the explosion entity
 	VectorMA (ent->s.origin, -0.02, ent->velocity, origin);
 	
+	tr = gi.trace(ent->owner->s.origin,NULL,NULL,ent->s.origin,ent->owner,MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA);
+	VectorCopy(tr.endpos,start);
 	VectorCopy(ent->owner->s.origin, dest);
-	VectorSet(dir,dest[0]-origin[0],dest[1]-origin[1],dest[2]-origin[2]);
+	VectorSet(dir,dest[0]-start[0],dest[1]-start[1],dest[2]-start[2]);
 	VectorNormalize2(dir,dir);
 
 	if (surf && (surf->flags & SURF_SKY))
@@ -625,7 +629,7 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 
 	gi.dprintf("Firing another rocket\n");
 	if (ent->owner)
-		fire_rocket (ent->owner, origin, dir, 200, 300, 10, 50);
+		fire_rocket (ent->owner, start, dir, 200, 300, 10, 50);
 	G_FreeEdict (ent);
 }
 
