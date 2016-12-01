@@ -580,21 +580,15 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 
 	// calculate position for the explosion entity
 	VectorMA (ent->s.origin, -0.02, ent->velocity, origin);
-	
-	tr = gi.trace(ent->owner->s.origin,NULL,NULL,ent->s.origin,ent->owner,MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA);
-	VectorCopy(tr.endpos,start);
-	VectorCopy(ent->owner->s.origin, dest);
-	VectorSet(dir,dest[0]-start[0],dest[1]-start[1],dest[2]-start[2]);
-	VectorNormalize2(dir,dir);
 
-	if (surf && (surf->flags & SURF_SKY))
+	/*if (surf && (surf->flags & SURF_SKY))
 	{
 		gi.dprintf("Firing another rocket FROM THE SKY\n");
 		if (ent->owner)
 			fire_rocket (ent->owner, origin, dir, 200, 300, 10, 50);
 		G_FreeEdict (ent);
 		return;
-	}
+	}*/
 
 	if (ent->owner->client)
 		PlayerNoise(ent->owner, ent->s.origin, PNOISE_IMPACT);
@@ -627,9 +621,18 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 	gi.WritePosition (origin);
 	gi.multicast (ent->s.origin, MULTICAST_PHS);
 
-	gi.dprintf("Firing another rocket\n");
-	if (ent->owner)
-		fire_rocket (ent->owner, start, dir, 200, 300, 10, 50);
+	//move rocket launch location to nearest surface to player
+	tr = gi.trace(ent->owner->s.origin,NULL,NULL,ent->s.origin,ent->owner,MASK_SHOT|CONTENTS_SLIME|CONTENTS_LAVA);	
+	VectorCopy(tr.endpos,start);
+
+	//determine launch direction
+	VectorCopy(ent->owner->s.origin, dest);
+	VectorSet(dir,dest[0]-start[0],dest[1]-start[1],dest[2]-start[2]);
+	VectorNormalize2(dir,dir);
+
+
+	//gi.dprintf("Firing another rocket\n");
+	fire_rocket (ent->owner, start, dir, 200, 300, 10, 50);
 	G_FreeEdict (ent);
 }
 
