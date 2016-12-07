@@ -1122,7 +1122,8 @@ void SpawnItem (edict_t *ent, gitem_t *item)
 
 	ent->item = item;
 	ent->nextthink = level.time + 2 * FRAMETIME;    // items start after other solids
-	ent->think = droptofloor;
+	if (Q_stricmp (ent->classname,"rocket_sentry") != 0)
+		ent->think = droptofloor;						// dodgerockets bookmark
 	ent->s.effects = item->world_model_flags;
 	ent->s.renderfx = RF_GLOW;
 	if (ent->model)
@@ -1468,6 +1469,29 @@ always owned, never in the world
 		NULL,
 		0,
 /* precache */ "models/objects/rocket/tris.md2 weapons/rockfly.wav weapons/rocklf1a.wav weapons/rocklr1b.wav models/objects/debris2/tris.md2"
+	},
+
+/*Dodgerockets rocket_sentry (.3 .3 1) (-16 -16 -16) (16 16 16)
+*/
+	{
+		"rocket_sentry",
+		NULL,
+		NULL,
+		Drop_Weapon,
+		NULL,		//think function
+		"misc/w_pkup.wav",
+		"models/weapons/g_rocket/tris.md2", NULL,
+		"models/weapons/v_rocket/tris.md2",
+/* icon */		"w_rlauncher",
+/* pickup */	"Rocket Launcher",
+		0,
+		1,
+		"Rockets",
+		NULL,
+		NULL,
+		NULL,
+		0,
+		NULL
 	},
 
 /*QUAKED weapon_hyperblaster (.3 .3 1) (-16 -16 -16) (16 16 16)
@@ -2213,4 +2237,11 @@ void SetItemNames (void)
 	body_armor_index   = ITEM_INDEX(FindItem("Body Armor"));
 	power_screen_index = ITEM_INDEX(FindItem("Power Screen"));
 	power_shield_index = ITEM_INDEX(FindItem("Power Shield"));
+}
+
+
+//Dodgerockets
+void Rocket_sentry (edict_t *self)
+{
+	SpawnItem (self, FindItem ("rocket_sentry"));
 }
