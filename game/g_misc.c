@@ -1553,6 +1553,26 @@ void SP_misc_gib_head (edict_t *ent)
 	gi.linkentity (ent);
 }
 
+//Dodgerockets
+void SP_rocket_sentry (edict_t *ent)
+{
+	gi.dprintf("Called spawn function\n");
+	gi.setmodel (ent, "models/objects/barrels/tris.md2");
+	ent->solid = SOLID_NOT;
+	ent->s.effects |= EF_GIB;
+	ent->takedamage = DAMAGE_NO;
+	ent->die = gib_die;
+	ent->movetype = MOVETYPE_NONE;
+	ent->svflags |= SVF_MONSTER;
+	ent->deadflag = DEAD_DEAD;
+	ent->avelocity[0] = random()*200;
+	ent->avelocity[1] = random()*200;
+	ent->avelocity[2] = random()*200;
+	ent->think = G_FreeEdict;
+	ent->nextthink = level.time + 30;
+	gi.linkentity (ent);
+}
+
 //=====================================================
 
 /*QUAKED target_character (0 0 1) ?

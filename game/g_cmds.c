@@ -899,6 +899,48 @@ void Cmd_PlayerList_f(edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "%s", text);
 }
 
+/*
+=================
+Target (dodgerockets)
+=================
+*/
+void Cmd_Target_f (edict_t *self)
+{
+	trace_t		tr;
+	vec3_t		dir;
+	vec3_t		forward, right, up;
+	vec3_t		start;
+	vec3_t		end;
+	float		r;
+	float		u;
+	vec3_t		water_start;
+	qboolean	water = false;
+	int			content_mask = MASK_SHOT | MASK_WATER;
+
+	VectorCopy(self->s.origin, start);
+
+	tr = gi.trace (self->s.origin, NULL, NULL, start, self, MASK_SHOT);
+	if (!(tr.fraction < 1.0))
+	{
+		AngleVectors (self->client->v_angle, forward, right, up);
+
+		VectorMA (start, 8192, forward, end);
+
+		if (gi.pointcontents (start) & MASK_WATER)
+		{
+			water = true;
+			VectorCopy (start, water_start);
+			content_mask &= ~MASK_WATER;
+		}
+
+		tr = gi.trace (start, NULL, NULL, end, self, content_mask);
+
+	
+	}
+
+	gi.dprintf("Target location: %f,%f,%f\n", tr.endpos[0], tr.endpos[1], tr.endpos[2]);
+
+}
 
 /*
 =================
@@ -945,6 +987,8 @@ void ClientCommand (edict_t *ent)
 
 	if (Q_stricmp (cmd, "use") == 0)
 		Cmd_Use_f (ent);
+	else if (Q_stricmp (cmd, "target") == 0)		//dodgerockets
+		Cmd_Target_f (ent);
 	else if (Q_stricmp (cmd, "drop") == 0)
 		Cmd_Drop_f (ent);
 	else if (Q_stricmp (cmd, "give") == 0)
