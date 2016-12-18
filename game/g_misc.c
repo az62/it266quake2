@@ -49,6 +49,7 @@ void SP_func_areaportal (edict_t *ent)
 
 //=====================================================
 
+void Rocket_Sentry_Think(edict_t *ent);
 
 /*
 =================
@@ -1561,17 +1562,50 @@ void SP_rocket_sentry (edict_t *ent)
 	ent->solid = SOLID_NOT;
 	ent->s.effects |= EF_GIB;
 	ent->takedamage = DAMAGE_NO;
-	ent->die = gib_die;
 	ent->movetype = MOVETYPE_NONE;
-	ent->svflags |= SVF_MONSTER;
-	ent->deadflag = DEAD_DEAD;
-	ent->avelocity[0] = random()*200;
-	ent->avelocity[1] = random()*200;
-	ent->avelocity[2] = random()*200;
-	ent->think = G_FreeEdict;
-	ent->nextthink = level.time + 30;
+	ent->think = Rocket_Sentry_Think;
+	ent->nextthink = level.time + 3;
 	gi.linkentity (ent);
 }
+
+void Rocket_Sentry_Think (edict_t *self)
+{
+	vec3_t			origin,dir,start,dest;
+	edict_t			*target,*e;
+	int				i;
+	trace_t			tr;
+
+	if (!self->target_ent)				//find the player target
+	{	
+		for (i=1, e=g_edicts+i ; i < globals.num_edicts ; i++,e++)
+		{
+			if(!e->inuse)
+				continue;
+			if(!e->client)
+				continue;
+			self->target_ent = e;
+		}
+	}
+	target = self->target_ent;
+	VectorCopy(self->s.origin,origin);
+
+
+
+	//determine launch direction
+	VectorCopy(target->s.origin, dest);
+	VectorSet(dir,dest[0]-origin[0],dest[1]-origin[1],dest[2]-origin[2]);
+	VectorNormalize2(dir,dir);
+	//VectorMA(origin,-50,dir,start);
+	
+
+
+
+	if(!self->target_ent->deadflag){
+		fire_rocket(self,origin, dir,100,300,20,100);
+	}
+	self->nextthink = level.time + 3;
+}
+
 
 //=====================================================
 
