@@ -1589,16 +1589,13 @@ void Rocket_Sentry_Think (edict_t *self)
 	target = self->target_ent;
 	VectorCopy(self->s.origin,origin);
 
-
+	self->rocket_type = ROCKET_HOMING;
 
 	//determine launch direction
 	VectorCopy(target->s.origin, dest);
-	VectorSet(dir,dest[0]-origin[0],dest[1]-origin[1],dest[2]-origin[2]);
-	VectorNormalize2(dir,dir);
-	//VectorMA(origin,-50,dir,start);
+	VectorSubtract(dest,origin,dir);
+	VectorNormalize(dir);
 	
-
-
 
 	if(!self->target_ent->deadflag){
 		fire_rocket(self,origin, dir,100,300,20,100);

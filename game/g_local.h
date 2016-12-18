@@ -591,6 +591,11 @@ typedef struct
 	int		flags;
 } field_t;
 
+//Dodgerockets
+typedef enum {
+	ROCKET_NORMAL,
+	ROCKET_HOMING,
+} rocket_type;
 
 extern	field_t fields[];
 extern	gitem_t	itemlist[];
@@ -1109,5 +1114,8 @@ struct edict_s
 	// common data blocks
 	moveinfo_t		moveinfo;
 	monsterinfo_t	monsterinfo;
+
+	//added for dodgerockets
+	int			rocket_type;
 };
 
