@@ -1626,6 +1626,19 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 		pm.cmd = *ucmd;
 
+		//dodgerockets testing
+		if (ent->slowed == true)
+		{
+			if (level.time < ent->slowed_time + 4.5 + FRAMETIME)
+			{
+				pm.cmd.forwardmove /= 2;
+				pm.cmd.sidemove /= 2;
+				pm.cmd.upmove /= 2;
+			} else{
+				ent->slowed = false;
+			}
+		}
+
 		pm.trace = PM_trace;	// adds default parms
 		pm.pointcontents = gi.pointcontents;
 

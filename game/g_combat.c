@@ -564,7 +564,16 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 		points = damage - 0.5 * VectorLength (v);
 		if (ent == attacker)
 			points = points * 0.5;
-		if (points > 0)
+		if (ent->client)
+		{
+			//dodgerockets
+			if (inflictor->health == ROCKET_AOE_SLOW)
+			{
+				ent->slowed = true;
+				ent->slowed_time = level.time;
+			}
+		}
+		if (points >= 0)
 		{
 			if (CanDamage (ent, inflictor))
 			{

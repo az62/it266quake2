@@ -603,6 +603,11 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 			}
 		}
 	}
+	if (other->client)
+	{
+		other->slowed = true;
+		other->slowed_time = level.time;
+	}
 
 	T_RadiusDamage(ent, ent->owner, ent->radius_dmg, other, ent->dmg_radius, MOD_R_SPLASH);
 
@@ -665,27 +670,49 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	VectorClear (rocket->maxs);
 	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
 	rocket->owner = self;
-	rocket->touch = rocket_touch;
 	rocket->dmg = damage;
 	rocket->radius_dmg = radius_damage;
 	rocket->dmg_radius = damage_radius;
 	rocket->s.sound = gi.soundindex ("weapons/rockfly.wav");
 	rocket->classname = "rocket";
+	rocket->health = self->rocket_type;
 
 	if (self->client)
 		check_dodge (self, rocket->s.origin, dir, speed);
 
 	
 	//Check for dodge rocket variants
-	if (self->rocket_type = ROCKET_NORMAL)
+	if (self->rocket_type == ROCKET_NORMAL)
 	{
 		rocket->nextthink = level.time + 8000/speed;
 		rocket->think = G_FreeEdict;
-	} else if (self->rocket_type = ROCKET_HOMING){
+		rocket->touch = rocket_touch;
+	} 
+	else if (self->rocket_type == ROCKET_HOMING)
+	{
 		rocket->nextthink = level.time + .6;
 		rocket->think = homing_think;
+		rocket->touch = rocket_touch;
 	}
-	
+	else if (self->rocket_type == ROCKET_AOE_SLOW)
+	{
+		rocket->nextthink = level.time + 8000/speed;
+		rocket->think = G_FreeEdict;
+		rocket->touch = rocket_touch;
+	}
+	else if (self->rocket_type == ROCKET_RETARD)
+	{
+		rocket->nextthink = level.time + 8000/speed;
+		rocket->think = G_FreeEdict;
+		rocket->touch = rocket_touch;
+	}
+	else if (self->rocket_type == ROCKET_BOUNCE)
+	{
+		rocket->nextthink = level.time + 8000/speed;
+		rocket->think = G_FreeEdict;
+		rocket->touch = rocket_touch;
+	}
+
 	gi.linkentity (rocket);
 }
 

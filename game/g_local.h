@@ -595,6 +595,9 @@ typedef struct
 typedef enum {
 	ROCKET_NORMAL,
 	ROCKET_HOMING,
+	ROCKET_AOE_SLOW,
+	ROCKET_RETARD,
+	ROCKET_BOUNCE
 } rocket_type;
 
 extern	field_t fields[];
@@ -1117,5 +1120,7 @@ struct edict_s
 
 	//added for dodgerockets
 	int			rocket_type;
+	qboolean	slowed;
+	int			slowed_time;
 };
 

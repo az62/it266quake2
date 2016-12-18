@@ -1589,18 +1589,33 @@ void Rocket_Sentry_Think (edict_t *self)
 	target = self->target_ent;
 	VectorCopy(self->s.origin,origin);
 
-	self->rocket_type = ROCKET_HOMING;
+	self->rocket_type = ROCKET_AOE_SLOW;
 
 	//determine launch direction
+	//all rockets start firing directly at player
 	VectorCopy(target->s.origin, dest);
 	VectorSubtract(dest,origin,dir);
 	VectorNormalize(dir);
-	
 
-	if(!self->target_ent->deadflag){
-		fire_rocket(self,origin, dir,100,300,20,100);
+	if(!self->target_ent->deadflag){						//only fire if player hasn't lost
+		if (self->rocket_type == ROCKET_NORMAL){
+			fire_rocket(self,origin,dir,100,300,20,200);
+			gi.dprintf("Firing normal rocket\n");
+		} else if (self->rocket_type == ROCKET_HOMING){
+			fire_rocket(self,origin,dir,100,300,20,200);
+			gi.dprintf("Firing homing rocket\n");
+		} else if (self->rocket_type == ROCKET_AOE_SLOW){
+			fire_rocket(self,origin,dir,0,600,200,0);
+			gi.dprintf("Firing aoe slow rocket\n");
+		} else if (self->rocket_type == ROCKET_RETARD){
+			fire_rocket(self,origin,dir,100,300,20,100);
+			gi.dprintf("Firing retarded rocket\n");
+		} else if (self->rocket_type == ROCKET_BOUNCE){
+			fire_rocket(self,origin,dir,100,300,20,100);
+			gi.dprintf("Firing bounce rocket\n");
+		}
 	}
-	self->nextthink = level.time + 3;
+	self->nextthink = level.time + 4;
 }
 
 
