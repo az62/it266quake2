@@ -1005,15 +1005,26 @@ void Cmd_Double_Jump_f (edict_t *self)
 {
 	vec3_t			velocity;
 
+	if (self->crouched && level.time > self->crouched_time + 2.5)			//charged jump
+	{
+		self->doublejumped == true;		//don't allow doublejumping after charged jump
+		VectorCopy(self->velocity,velocity);
+		VectorSet(velocity,velocity[0],velocity[1],1000);
+		VectorCopy(velocity,self->velocity);
+		return;
+	}
+
 	if (self->doublejumped == true)
 		return;
 
 	VectorCopy(self->velocity,velocity);
 
-	if (velocity[2] != 0)
+	if (velocity[2] != 0){			//in air
+		VectorSet(velocity,velocity[0],velocity[1],500);
 		self->doublejumped = true;
-	
-	VectorSet(velocity,velocity[0],velocity[1],500);
+	} else {
+		VectorSet(velocity,velocity[0],velocity[1],300);
+	}
 	VectorCopy(velocity,self->velocity);
 }
 
