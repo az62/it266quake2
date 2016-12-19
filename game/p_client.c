@@ -1629,23 +1629,14 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 		pm.cmd = *ucmd;
 
+		pm.cmd.forwardmove;
+		pm.cmd.sidemove;
+		pm.cmd.upmove;
 
 
 
 
 		//dodgerockets
-		if (ent->slowed == true)
-		{
-			if (level.time < ent->slowed_time + 4.5 + FRAMETIME)
-			{
-				pm.cmd.forwardmove /= 2;
-				pm.cmd.sidemove /= 2;
-				pm.cmd.upmove /= 2;
-			} else{
-				ent->slowed = false;
-			}
-		}
-
 		if (ent->velocity[2] == 0 && ent->doublejumped == true)
 			ent->doublejumped = false;
 
@@ -1666,9 +1657,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			//gi.dprintf("Uncrouched!\n");
 			ent->crouched = false;
 		}
-
-
 		//end dodgerockets
+
 
 
 
@@ -1687,18 +1677,31 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		{
 			ent->s.origin[i] = pm.s.origin[i]*0.125;
 			ent->velocity[i] = pm.s.velocity[i]*0.125;
+			//dodgerockets - reduce speed when slowed
+			if (ent->slowed)
+			{
+				if (level.time < ent->slowed_time + 4.5 + FRAMETIME){
+					if (i!=2)
+						ent->velocity[i] /= 2;
+				} else
+					ent->slowed = false;
+			}
 		}
+
+
 
 
 		//dodgerockets start
 		if (ent->wallclimbing )
 		{
-			if ((int)ent->s.origin[0] == (int)ent->wallclimb_pos[0] && (int)ent->s.origin[1] == (int)ent->wallclimb_pos[1] && (int)ent->s.origin[2] > (int)ent->s.old_origin[2])
+			if ((int)ent->s.origin[0] == (int)ent->wallclimb_pos[0] && (int)ent->s.origin[1] == (int)ent->wallclimb_pos[1] && (int)ent->s.origin[2] != (int)ent->s.old_origin[2])
 				VectorCopy(ent->wallclimb_dir,ent->velocity);
 			else
 				ent->wallclimbing = false;
 		}
 		//dodgerockets end
+
+
 
 
 		VectorCopy (pm.mins, ent->mins);
