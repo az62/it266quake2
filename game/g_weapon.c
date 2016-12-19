@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "g_local.h"
 
 
+void fire_bounce_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage);
+
 /*
 =================
 check_dodge
@@ -568,11 +570,29 @@ fire_rocket
 */
 void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
-	vec3_t		origin;
+	vec3_t		origin,dir,random,normal,u,w;
+	edict_t		*target;
 	int			n;
 
 	if (other == ent->owner)
 		return;
+
+	//dodgerockets bounce rocket handling
+	if (ent->rocket_type == ROCKET_BOUNCE && ent->count > 0)
+	{
+		ent->count -= 1;
+		VectorCopy(ent->s.origin,origin);
+		target = ent->owner->target_ent;
+
+		//bounce towards player
+		VectorSubtract(target->s.origin,origin,dir);
+		VectorSet(random, -1 + .5*random(), -1 + .5*random(), -1 + .5*random());		//put some random on bounce direction
+		VectorAdd(random,dir,dir);
+		VectorNormalize(dir);
+			
+		fire_bounce_rocket(ent,origin,dir,ent->dmg,ent->speed,ent->dmg_radius,ent->radius_dmg);
+	}
+
 
 	if (surf && (surf->flags & SURF_SKY))
 	{
@@ -642,7 +662,7 @@ void homing_think (edict_t *ent)
 	VectorNormalize(dir);
 
 	//adjust trajectory
-	VectorScale(dir, 0.2, dir);
+	VectorScale(dir, 0.35, dir);
 	VectorAdd(dir, ent->movedir, dir);
 	VectorNormalize(dir);
 	VectorCopy(dir, ent->movedir);
@@ -708,7 +728,9 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	if (self->client)
 		check_dodge (self, rocket->s.origin, dir, speed);
 	
-	rocket->health = self->rocket_type;				//use health as rocket type indicator
+	rocket->rocket_type = self->rocket_type;				//use health as rocket type indicator
+	rocket->count = 3;								//use count as bounce rocket bounce counter
+	rocket->speed = speed;
 	
 	//Check for dodge rocket variants
 	if (self->rocket_type == ROCKET_NORMAL)
@@ -742,6 +764,46 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 		rocket->touch = rocket_touch;
 	}
 
+	gi.linkentity (rocket);
+}
+
+//dodgerockets
+void fire_bounce_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
+{
+	edict_t	*rocket;
+
+	rocket = G_Spawn();
+	VectorCopy (start, rocket->s.origin);
+	VectorCopy (dir, rocket->movedir);
+	vectoangles (dir, rocket->s.angles);
+	VectorScale (dir, speed, rocket->velocity);
+	rocket->movetype = MOVETYPE_FLYMISSILE;
+	rocket->clipmask = MASK_SHOT;
+	rocket->solid = SOLID_BBOX;
+	rocket->s.effects |= EF_ROCKET;
+	VectorClear (rocket->mins);
+	VectorClear (rocket->maxs);
+	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
+	rocket->owner = self->owner;
+	rocket->dmg = damage;
+	rocket->radius_dmg = radius_damage;
+	rocket->dmg_radius = damage_radius;
+	rocket->s.sound = gi.soundindex ("weapons/rockfly.wav");
+	rocket->classname = "rocket";
+
+
+	if (self->client)
+		check_dodge (self, rocket->s.origin, dir, speed);
+	
+	rocket->rocket_type = self->rocket_type;						//use health as rocket type indicator
+	rocket->count = self->count;								//use count as bounce rocket bounce counter
+	rocket->speed = speed;
+	
+	
+	rocket->nextthink = level.time + 8000/speed;
+	rocket->think = G_FreeEdict;
+	rocket->touch = rocket_touch;
+	
 	gi.linkentity (rocket);
 }
 

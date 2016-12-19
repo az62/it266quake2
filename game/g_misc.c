@@ -1564,7 +1564,7 @@ void SP_rocket_sentry (edict_t *ent)
 	ent->takedamage = DAMAGE_NO;
 	ent->movetype = MOVETYPE_NONE;
 	ent->think = Rocket_Sentry_Think;
-	ent->nextthink = level.time + 3;
+	ent->nextthink = level.time + 1;
 	gi.linkentity (ent);
 }
 
@@ -1589,7 +1589,7 @@ void Rocket_Sentry_Think (edict_t *self)
 	target = self->target_ent;
 	VectorCopy(self->s.origin,origin);
 
-	self->rocket_type = ROCKET_DRUNK;
+	self->rocket_type = ROCKET_BOUNCE;
 
 	//determine launch direction
 	//all rockets start firing directly at player
