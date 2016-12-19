@@ -939,6 +939,8 @@ void Cmd_Target_f (edict_t *self)
 	}
 
 	gi.dprintf("Target location: %f,%f,%f\n", tr.endpos[0], tr.endpos[1], tr.endpos[2]);
+	gi.dprintf("Movespeed: %f\n", self->moveinfo.speed);
+	
 
 }
 
@@ -965,10 +967,6 @@ void Cmd_Blink_f (edict_t *self)
 	tr = gi.trace (self->s.origin, NULL, NULL, start, self, MASK_SHOT);
 	if (!(tr.fraction < 1.0))
 	{
-		AngleVectors (self->client->v_angle, forward, right, up);
-
-		VectorMA (start, 200, forward, end);
-
 		if (gi.pointcontents (start) & MASK_WATER)
 		{
 			water = true;
@@ -976,18 +974,23 @@ void Cmd_Blink_f (edict_t *self)
 			content_mask &= ~MASK_WATER;
 		}
 	}
-
-	tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
-	/*if (tr.fraction != 1)
-	{
-		VectorScale(forward,-1,forward);
-		VectorMA(tr.endpos,25,forward,correction);
-		VectorSet(blink, correction[0], correction[1], self->s.origin[2]);
-	}else
-		VectorSet(blink, tr.endpos[0], tr.endpos[1], self->s.origin[2]);*/
 	
-	VectorSet(blink, tr.endpos[0], tr.endpos[1], self->s.origin[2]);
-	gi.dprintf("Blinking to: %f,%f,%f\n", blink[0], blink[1], self->s.origin[2]);
+	AngleVectors (self->client->v_angle, forward, right, up);
+	
+	if (self->crouched && level.time > self->crouched_time + 2.5)
+	{
+		VectorMA (start, 600, forward, end);
+		tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
+		VectorSet(blink, tr.endpos[0], tr.endpos[1], tr.endpos[2]);
+	} 
+	else
+	{
+		VectorMA (start, 200, forward, end);
+		tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
+		VectorSet(blink, tr.endpos[0], tr.endpos[1], self->s.origin[2]);
+	}
+	
+	gi.dprintf("Blinking to: %f,%f,%f\n", blink[0], blink[1], blink[2]);
 	VectorCopy(blink,self->s.origin);
 
 }

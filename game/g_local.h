@@ -1121,7 +1121,9 @@ struct edict_s
 	//added for dodgerockets
 	int			rocket_type;
 	qboolean	slowed;
-	int			slowed_time;
+	float		slowed_time;
 	qboolean	doublejumped;
+	qboolean	crouched;
+	float		crouched_time;
 };
 

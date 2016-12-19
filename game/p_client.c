@@ -1626,6 +1626,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 		pm.cmd = *ucmd;
 
+
+
 		//dodgerockets
 		if (ent->slowed == true)
 		{
@@ -1641,6 +1643,26 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 		if (ent->velocity[2] == 0 && ent->doublejumped == true)
 			ent->doublejumped = false;
+
+		if (ent->crouched && level.time > ent->crouched_time + 2.5)
+			gi.dprintf("Charged blink ready!\n");
+
+		if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
+		{
+			if (!ent->crouched)
+			{
+				ent->crouched = true;
+				ent->crouched_time = level.time;
+				//gi.dprintf("Crouched time: %f\n", ent->crouched_time);
+			}
+		}
+		else
+		{
+			//gi.dprintf("Uncrouched!\n");
+			ent->crouched = false;
+		}
+
+		//end dodgerockets
 
 		pm.trace = PM_trace;	// adds default parms
 		pm.pointcontents = gi.pointcontents;
