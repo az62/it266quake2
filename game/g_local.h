@@ -1122,5 +1122,6 @@ struct edict_s
 	int			rocket_type;
 	qboolean	slowed;
 	int			slowed_time;
+	qboolean	doublejumped;
 };
 

@@ -967,7 +967,7 @@ void Cmd_Blink_f (edict_t *self)
 	{
 		AngleVectors (self->client->v_angle, forward, right, up);
 
-		VectorMA (start, 300, forward, end);
+		VectorMA (start, 200, forward, end);
 
 		if (gi.pointcontents (start) & MASK_WATER)
 		{
@@ -975,13 +975,8 @@ void Cmd_Blink_f (edict_t *self)
 			VectorCopy (start, water_start);
 			content_mask &= ~MASK_WATER;
 		}
-
-		tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
-		
-	
 	}
-	self->s.angles;
-	VectorMA(self->s.origin,300,self->s.angles,end);
+
 	tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
 	/*if (tr.fraction != 1)
 	{
@@ -995,6 +990,27 @@ void Cmd_Blink_f (edict_t *self)
 	gi.dprintf("Blinking to: %f,%f,%f\n", blink[0], blink[1], self->s.origin[2]);
 	VectorCopy(blink,self->s.origin);
 
+}
+
+/*
+=================
+DoubleJump (dodgerockets)
+=================
+*/
+void Cmd_Double_Jump_f (edict_t *self)
+{
+	vec3_t			velocity;
+
+	if (self->doublejumped == true)
+		return;
+
+	VectorCopy(self->velocity,velocity);
+
+	if (velocity[2] != 0)
+		self->doublejumped = true;
+	
+	VectorSet(velocity,velocity[0],velocity[1],500);
+	VectorCopy(velocity,self->velocity);
 }
 
 /*
@@ -1042,10 +1058,14 @@ void ClientCommand (edict_t *ent)
 
 	if (Q_stricmp (cmd, "use") == 0)
 		Cmd_Use_f (ent);
+
 	else if (Q_stricmp (cmd, "target") == 0)		//dodgerockets
 		Cmd_Target_f (ent);
 	else if (Q_stricmp (cmd, "blink") == 0)
 		Cmd_Blink_f (ent);
+	else if (Q_stricmp (cmd, "doublejump") == 0)
+		Cmd_Double_Jump_f (ent);
+
 	else if (Q_stricmp (cmd, "drop") == 0)
 		Cmd_Drop_f (ent);
 	else if (Q_stricmp (cmd, "give") == 0)

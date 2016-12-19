@@ -1626,7 +1626,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 		pm.cmd = *ucmd;
 
-		//dodgerockets testing
+		//dodgerockets
 		if (ent->slowed == true)
 		{
 			if (level.time < ent->slowed_time + 4.5 + FRAMETIME)
@@ -1638,6 +1638,9 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				ent->slowed = false;
 			}
 		}
+
+		if (ent->velocity[2] == 0 && ent->doublejumped == true)
+			ent->doublejumped = false;
 
 		pm.trace = PM_trace;	// adds default parms
 		pm.pointcontents = gi.pointcontents;
