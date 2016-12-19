@@ -939,7 +939,8 @@ void Cmd_Target_f (edict_t *self)
 	}
 
 	gi.dprintf("Target location: %f,%f,%f\n", tr.endpos[0], tr.endpos[1], tr.endpos[2]);
-	gi.dprintf("Movespeed: %f\n", self->moveinfo.speed);
+	gi.dprintf("Surface Normal: %f,%f,%f\n", tr.plane.normal[0], tr.plane.normal[1], tr.plane.normal[2]);
+
 	
 
 }
@@ -1018,6 +1019,68 @@ void Cmd_Double_Jump_f (edict_t *self)
 
 /*
 =================
+WallClimb (dodgerockets)
+=================
+*/
+void Cmd_Wall_Climb_f (edict_t *self)
+{
+	trace_t		tr;
+	vec3_t		dir;
+	vec3_t		forward, right, up;
+	vec3_t		start,end;
+	vec3_t		blink,wallclimbdir;
+	float		r;
+	float		u;
+	vec3_t		water_start;
+	qboolean	water = false;
+	int			content_mask = MASK_SHOT | MASK_WATER;
+
+	VectorCopy(self->s.origin, start);
+
+	tr = gi.trace (self->s.origin, NULL, NULL, start, self, MASK_SHOT);
+	if (!(tr.fraction < 1.0))
+	{
+		if (gi.pointcontents (start) & MASK_WATER)
+		{
+			water = true;
+			VectorCopy (start, water_start);
+			content_mask &= ~MASK_WATER;
+		}
+	}
+	
+	//trace a wall in front of player
+	AngleVectors (self->client->v_angle, forward, right, up);					
+	VectorMA (start, 50, forward, end);
+	tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
+	
+	if (tr.fraction < 1)		//if wall is close enough, otherwise give up
+	{
+		//climb only vertical walls
+		if (tr.plane.normal[2] != 0){
+			gi.dprintf("Not a valid wall!\n");
+			return;
+		}
+
+		//get right up against the wall
+		VectorSet(blink, tr.endpos[0], tr.endpos[1], self->s.origin[2]);
+		VectorCopy(blink,self->s.origin);
+		VectorSet(self->velocity,0,0,0);
+
+		//start climbing
+		self->wallclimbing = true;
+		VectorCopy(self->s.origin,self->wallclimb_pos);
+		VectorCopy(tr.plane.normal,wallclimbdir);
+		VectorInverse(wallclimbdir);
+		VectorScale(wallclimbdir,100,wallclimbdir);
+		VectorSet(self->wallclimb_dir,wallclimbdir[0],wallclimbdir[1],300);
+		VectorCopy(self->wallclimb_dir,self->velocity);
+	} else
+		gi.dprintf("Not close enough to a wall.\n");
+
+}
+
+/*
+=================
 ClientCommand
 =================
 */
@@ -1068,6 +1131,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_Blink_f (ent);
 	else if (Q_stricmp (cmd, "doublejump") == 0)
 		Cmd_Double_Jump_f (ent);
+	else if (Q_stricmp (cmd, "wallclimb") == 0)
+		Cmd_Wall_Climb_f (ent);
 
 	else if (Q_stricmp (cmd, "drop") == 0)
 		Cmd_Drop_f (ent);

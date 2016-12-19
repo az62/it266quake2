@@ -1125,5 +1125,8 @@ struct edict_s
 	qboolean	doublejumped;
 	qboolean	crouched;
 	float		crouched_time;
+	qboolean	wallclimbing;
+	vec3_t		wallclimb_pos;
+	vec3_t		wallclimb_dir;
 };
 

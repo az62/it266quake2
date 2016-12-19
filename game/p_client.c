@@ -1574,6 +1574,9 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	int		i, j;
 	pmove_t	pm;
 
+	vec3_t		dest,origin,up,above;
+	trace_t		tr;
+
 	level.current_entity = ent;
 	client = ent->client;
 
@@ -1628,6 +1631,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 
 
+
+
 		//dodgerockets
 		if (ent->slowed == true)
 		{
@@ -1662,7 +1667,11 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			ent->crouched = false;
 		}
 
+
 		//end dodgerockets
+
+
+
 
 		pm.trace = PM_trace;	// adds default parms
 		pm.pointcontents = gi.pointcontents;
@@ -1679,6 +1688,18 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			ent->s.origin[i] = pm.s.origin[i]*0.125;
 			ent->velocity[i] = pm.s.velocity[i]*0.125;
 		}
+
+
+		//dodgerockets start
+		if (ent->wallclimbing )
+		{
+			if ((int)ent->s.origin[0] == (int)ent->wallclimb_pos[0] && (int)ent->s.origin[1] == (int)ent->wallclimb_pos[1] && (int)ent->s.origin[2] > (int)ent->s.old_origin[2])
+				VectorCopy(ent->wallclimb_dir,ent->velocity);
+			else
+				ent->wallclimbing = false;
+		}
+		//dodgerockets end
+
 
 		VectorCopy (pm.mins, ent->mins);
 		VectorCopy (pm.maxs, ent->maxs);
