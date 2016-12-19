@@ -653,6 +653,34 @@ void homing_think (edict_t *ent)
 	ent->nextthink = level.time + 0.1;
 }
 
+void drunk_think (edict_t *ent)
+{
+	edict_t			*target;
+	vec3_t			origin,dir,random;
+	vec_t			speed;
+
+	VectorCopy(ent->s.origin,origin);
+	target = ent->owner->target_ent;
+
+	VectorSet(random,-1 + 2*random(),-1 + 2*random(),-1 + 2*random());
+
+	//determine player direction
+	VectorSubtract(target->s.origin,origin,dir);
+	VectorNormalize(dir);
+
+	//adjust trajectory
+	VectorScale(dir, 0.2, dir);
+	VectorAdd(dir,random,dir);
+	VectorAdd(dir, ent->movedir, dir);
+	VectorNormalize(dir);
+	VectorCopy(dir, ent->movedir);
+	vectoangles(dir, ent->s.angles);
+	speed = VectorLength(ent->velocity);
+	VectorScale(dir, speed, ent->velocity);
+
+	ent->nextthink = level.time + 0.1;
+}
+
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage)
 {
 	edict_t	*rocket;
@@ -675,11 +703,12 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	rocket->dmg_radius = damage_radius;
 	rocket->s.sound = gi.soundindex ("weapons/rockfly.wav");
 	rocket->classname = "rocket";
-	rocket->health = self->rocket_type;
+
 
 	if (self->client)
 		check_dodge (self, rocket->s.origin, dir, speed);
-
+	
+	rocket->health = self->rocket_type;				//use health as rocket type indicator
 	
 	//Check for dodge rocket variants
 	if (self->rocket_type == ROCKET_NORMAL)
@@ -700,10 +729,10 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 		rocket->think = G_FreeEdict;
 		rocket->touch = rocket_touch;
 	}
-	else if (self->rocket_type == ROCKET_RETARD)
+	else if (self->rocket_type == ROCKET_DRUNK)
 	{
-		rocket->nextthink = level.time + 8000/speed;
-		rocket->think = G_FreeEdict;
+		rocket->nextthink = level.time + .6;
+		rocket->think = drunk_think;
 		rocket->touch = rocket_touch;
 	}
 	else if (self->rocket_type == ROCKET_BOUNCE)
