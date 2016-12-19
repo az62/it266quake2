@@ -944,6 +944,61 @@ void Cmd_Target_f (edict_t *self)
 
 /*
 =================
+Blink (dodgerockets)
+=================
+*/
+void Cmd_Blink_f (edict_t *self)
+{
+	trace_t		tr;
+	vec3_t		dir;
+	vec3_t		forward, right, up;
+	vec3_t		start,end;
+	vec3_t		blink,correction;
+	float		r;
+	float		u;
+	vec3_t		water_start;
+	qboolean	water = false;
+	int			content_mask = MASK_SHOT | MASK_WATER;
+
+	VectorCopy(self->s.origin, start);
+
+	tr = gi.trace (self->s.origin, NULL, NULL, start, self, MASK_SHOT);
+	if (!(tr.fraction < 1.0))
+	{
+		AngleVectors (self->client->v_angle, forward, right, up);
+
+		VectorMA (start, 300, forward, end);
+
+		if (gi.pointcontents (start) & MASK_WATER)
+		{
+			water = true;
+			VectorCopy (start, water_start);
+			content_mask &= ~MASK_WATER;
+		}
+
+		tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
+		
+	
+	}
+	self->s.angles;
+	VectorMA(self->s.origin,300,self->s.angles,end);
+	tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
+	/*if (tr.fraction != 1)
+	{
+		VectorScale(forward,-1,forward);
+		VectorMA(tr.endpos,25,forward,correction);
+		VectorSet(blink, correction[0], correction[1], self->s.origin[2]);
+	}else
+		VectorSet(blink, tr.endpos[0], tr.endpos[1], self->s.origin[2]);*/
+	
+	VectorSet(blink, tr.endpos[0], tr.endpos[1], self->s.origin[2]);
+	gi.dprintf("Blinking to: %f,%f,%f\n", blink[0], blink[1], self->s.origin[2]);
+	VectorCopy(blink,self->s.origin);
+
+}
+
+/*
+=================
 ClientCommand
 =================
 */
@@ -989,6 +1044,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_Use_f (ent);
 	else if (Q_stricmp (cmd, "target") == 0)		//dodgerockets
 		Cmd_Target_f (ent);
+	else if (Q_stricmp (cmd, "blink") == 0)
+		Cmd_Blink_f (ent);
 	else if (Q_stricmp (cmd, "drop") == 0)
 		Cmd_Drop_f (ent);
 	else if (Q_stricmp (cmd, "give") == 0)

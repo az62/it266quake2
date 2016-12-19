@@ -1564,7 +1564,7 @@ void SP_rocket_sentry (edict_t *ent)
 	ent->takedamage = DAMAGE_NO;
 	ent->movetype = MOVETYPE_NONE;
 	ent->think = Rocket_Sentry_Think;
-	ent->nextthink = level.time + 1;
+	ent->nextthink = level.time + 120;
 	gi.linkentity (ent);
 }
 

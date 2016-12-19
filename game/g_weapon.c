@@ -728,7 +728,7 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	if (self->client)
 		check_dodge (self, rocket->s.origin, dir, speed);
 	
-	rocket->rocket_type = self->rocket_type;				//use health as rocket type indicator
+	rocket->rocket_type = self->rocket_type;
 	rocket->count = 3;								//use count as bounce rocket bounce counter
 	rocket->speed = speed;
 	
@@ -795,7 +795,7 @@ void fire_bounce_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, in
 	if (self->client)
 		check_dodge (self, rocket->s.origin, dir, speed);
 	
-	rocket->rocket_type = self->rocket_type;						//use health as rocket type indicator
+	rocket->rocket_type = self->rocket_type;
 	rocket->count = self->count;								//use count as bounce rocket bounce counter
 	rocket->speed = speed;
 	
