@@ -1119,6 +1119,7 @@ struct edict_s
 	monsterinfo_t	monsterinfo;
 
 	//added for dodgerockets
+	int			dodge_score;
 	int			rocket_type;
 	qboolean	slowed;
 	float		slowed_time;

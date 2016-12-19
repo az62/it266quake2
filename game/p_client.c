@@ -400,8 +400,8 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 	}
 
 	gi.bprintf (PRINT_MEDIUM,"%s died.\n", self->client->pers.netname);
-	if (deathmatch->value)
-		self->client->resp.score--;
+	//if (deathmatch->value)
+		//self->client->resp.score--;
 }
 
 
@@ -1105,6 +1105,9 @@ void PutClientInServer (edict_t *ent)
 	client_persistant_t	saved;
 	client_respawn_t	resp;
 
+	//dodgerockets score
+	ent->client->resp.score = 0;
+
 	// find a spawn point
 	// do it before setting health back up, so farthest
 	// ranging doesn't count this client
@@ -1692,7 +1695,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 
 		//dodgerockets start
-		if (ent->wallclimbing )
+		if (ent->wallclimbing)
 		{
 			if ((int)ent->s.origin[0] == (int)ent->wallclimb_pos[0] && (int)ent->s.origin[1] == (int)ent->wallclimb_pos[1] && (int)ent->s.origin[2] != (int)ent->s.old_origin[2])
 				VectorCopy(ent->wallclimb_dir,ent->velocity);

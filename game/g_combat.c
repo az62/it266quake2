@@ -386,6 +386,16 @@ void T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir,
 	if (!targ->takedamage)
 		return;
 
+	//dodgerockets
+	if (inflictor->classname == "rocket")
+	{
+		if (targ == inflictor->owner->target_ent && inflictor->rocket_type == ROCKET_AOE_SLOW)
+		{
+			targ->slowed = true;
+			targ->slowed_time = level.time;
+		}
+	}
+
 	// friendly fire avoidance
 	// if enabled you can't hurt teammates (but you can hurt yourself)
 	// knockback still occurs
@@ -548,8 +558,11 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 {
 	float	points;
 	edict_t	*ent = NULL;
+	edict_t *target;
 	vec3_t	v;
 	vec3_t	dir;
+
+	target = inflictor->owner->target_ent;//dodgerockets
 
 	while ((ent = findradius(ent, inflictor->s.origin, radius)) != NULL)
 	{
@@ -564,13 +577,14 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 		points = damage - 0.5 * VectorLength (v);
 		if (ent == attacker)
 			points = points * 0.5;
-		if (ent->client)
+
+		//dodgerockets
+		if (ent == target)
 		{
-			//dodgerockets
-			if (inflictor->health == ROCKET_AOE_SLOW)
+			if (inflictor->rocket_type == ROCKET_AOE_SLOW)
 			{
-				ent->slowed = true;
-				ent->slowed_time = level.time;
+				target->slowed = true;
+				target->slowed_time = level.time;
 			}
 		}
 		if (points >= 0)

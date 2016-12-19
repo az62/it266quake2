@@ -576,13 +576,14 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 
 	if (other == ent->owner)
 		return;
-
+	
 	//dodgerockets bounce rocket handling
+	target = ent->owner->target_ent;
 	if (ent->rocket_type == ROCKET_BOUNCE && ent->count > 0)
 	{
-		ent->count -= 1;
+		//count gets decremeneted in fire function
+
 		VectorCopy(ent->s.origin,origin);
-		target = ent->owner->target_ent;
 
 		//bounce towards player
 		VectorSubtract(target->s.origin,origin,dir);
@@ -592,7 +593,6 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 			
 		fire_bounce_rocket(ent,origin,dir,ent->dmg,ent->speed,ent->dmg_radius,ent->radius_dmg);
 	}
-
 
 	if (surf && (surf->flags & SURF_SKY))
 	{
@@ -623,10 +623,15 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 			}
 		}
 	}
-	if (other->client)
+
+	//dodgerockets
+	if (other != target && ent->rocket_type != ROCKET_AOE_SLOW)
 	{
-		other->slowed = true;
-		other->slowed_time = level.time;
+		if (!(ent->rocket_type == ROCKET_BOUNCE && ent->count > 0) && !target->deadflag)
+		{
+			target->client->resp.score += 1;		//rocket dodged, increment score
+			gi.dprintf("Player score: %d\n", target->client->resp.score);
+		}
 	}
 
 	T_RadiusDamage(ent, ent->owner, ent->radius_dmg, other, ent->dmg_radius, MOD_R_SPLASH);
@@ -796,7 +801,7 @@ void fire_bounce_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, in
 		check_dodge (self, rocket->s.origin, dir, speed);
 	
 	rocket->rocket_type = self->rocket_type;
-	rocket->count = self->count;								//use count as bounce rocket bounce counter
+	rocket->count = self->count - 1;								//use count as bounce rocket bounce counter
 	rocket->speed = speed;
 	
 	
