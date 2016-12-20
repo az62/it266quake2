@@ -978,20 +978,25 @@ void Cmd_Blink_f (edict_t *self)
 	
 	AngleVectors (self->client->v_angle, forward, right, up);
 	
-	if (self->crouched && level.time > self->crouched_time + 2.5)
+	if (self->crouched && level.time > self->crouched_time + 2.5)				//super blink
 	{
 		VectorMA (start, 600, forward, end);
 		tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
 		VectorSet(blink, tr.endpos[0], tr.endpos[1], tr.endpos[2]);
+		self->client->num_superblinks--;
+		G_SetStats(self);
 	} 
-	else
+	else																		//normal blink
 	{
 		VectorMA (start, 200, forward, end);
 		tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
 		VectorSet(blink, tr.endpos[0], tr.endpos[1], self->s.origin[2]);
+		self->client->num_blinks--;
+		G_SetStats(self);
 	}
 	
-	gi.dprintf("Blinking to: %f,%f,%f\n", blink[0], blink[1], blink[2]);
+	gi.dprintf("Blinking to: %f,%f,%f\nNumber of blinks: %d\n", blink[0], blink[1], blink[2], self->client->num_blinks);
+	gi.dprintf("");
 	VectorCopy(blink,self->s.origin);
 
 }
@@ -1011,6 +1016,9 @@ void Cmd_Double_Jump_f (edict_t *self)
 		VectorCopy(self->velocity,velocity);
 		VectorSet(velocity,velocity[0],velocity[1],1000);
 		VectorCopy(velocity,self->velocity);
+
+		self->client->num_superjumps--;
+		G_SetStats(self);
 		return;
 	}
 
@@ -1026,6 +1034,8 @@ void Cmd_Double_Jump_f (edict_t *self)
 		VectorSet(velocity,velocity[0],velocity[1],300);
 	}
 	VectorCopy(velocity,self->velocity);
+	self->client->num_doublejumps--;
+	G_SetStats(self);
 }
 
 /*
@@ -1085,6 +1095,9 @@ void Cmd_Wall_Climb_f (edict_t *self)
 		VectorScale(wallclimbdir,100,wallclimbdir);
 		VectorSet(self->wallclimb_dir,wallclimbdir[0],wallclimbdir[1],300);
 		VectorCopy(self->wallclimb_dir,self->velocity);
+
+		self->client->num_wallclimbs--;
+		G_SetStats(self);
 	} else
 		gi.dprintf("Not close enough to a wall.\n");
 

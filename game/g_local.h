@@ -967,6 +967,14 @@ struct gclient_s
 
 	edict_t		*chase_target;		// player we are chasing
 	qboolean	update_chase;		// need to update chase info?
+
+	//added for dodgerockets
+	int			num_blinks;
+	int			num_superblinks;
+	int			num_doublejumps;
+	int			num_wallclimbs;
+	int			num_superjumps;
+	short		abilities[5];
 };
 
 

@@ -1105,8 +1105,14 @@ void PutClientInServer (edict_t *ent)
 	client_persistant_t	saved;
 	client_respawn_t	resp;
 
-	//dodgerockets score
+	//dodgerockets
 	ent->client->resp.score = 0;
+	ent->client->num_blinks = 0;
+	ent->client->num_superblinks = 0;
+	ent->client->num_doublejumps = 0;
+	ent->client->num_wallclimbs = 0;
+	ent->client->num_superjumps = 0;
+
 
 	// find a spawn point
 	// do it before setting health back up, so farthest

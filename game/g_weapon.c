@@ -630,6 +630,7 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 		if (!(ent->rocket_type == ROCKET_BOUNCE && ent->count > 0) && !target->deadflag)
 		{
 			target->client->resp.score += 1;		//rocket dodged, increment score
+			gi.centerprintf(target,"Hello player\n==================\nCurrent score: %d",target->client->resp.score);
 			gi.dprintf("Player score: %d\n", target->client->resp.score);
 		}
 	}

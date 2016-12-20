@@ -783,6 +783,15 @@ char *dm_statusbar =
   "xv 64 "
   "stat_string 16 "
 "endif "
+
+// dodgerockets
+
+// num blinks
+"yb	-55 "
+"xr	-100 "
+"num 2	19 "
+"xr -50 "
+"stat_string 18 "
 ;
 
 

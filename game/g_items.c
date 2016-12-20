@@ -2111,6 +2111,29 @@ tank commander's head
 /* precache */ "items/s_health.wav items/n_health.wav items/l_health.wav items/m_health.wav"
 	},
 
+	//dodgerockets abilites
+	{
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL, 0,
+		NULL,
+/* icon */		NULL,
+/* pickup */	"Blink",
+/* width */		3,
+		0,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+/* precache */ NULL
+	},
+
+
 	// end of list marker
 	{NULL}
 };

@@ -1615,7 +1615,7 @@ void Rocket_Sentry_Think (edict_t *self)
 			gi.dprintf("Firing bounce rocket\n");
 		}
 	}
-	self->nextthink = level.time + 4;
+	self->nextthink = level.time + 8;
 }
 
 

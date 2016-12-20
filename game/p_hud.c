@@ -506,7 +506,7 @@ void G_SetStats (edict_t *ent)
 	//
 	// frags
 	//
-	ent->client->ps.stats[STAT_FRAGS] = ent->client->resp.score;
+	ent->client->ps.stats[STAT_FRAGS] = 100;//ent->client->resp.score;
 
 	//
 	// help icon / current weapon if not shown
@@ -519,6 +519,11 @@ void G_SetStats (edict_t *ent)
 	else
 		ent->client->ps.stats[STAT_HELPICON] = 0;
 
+	///
+	/// dodgerockets
+	///
+	ent->client->ps.stats[STAT_BLINKS] = ent->client->num_blinks;
+	ent->client->ps.stats[STAT_BLINKS_STRING] = CS_ITEMS+ITEM_INDEX(FindItem("Blink"));
 	ent->client->ps.stats[STAT_SPECTATOR] = 0;
 }
 
