@@ -1131,6 +1131,7 @@ struct edict_s
 	int			rocket_type;
 	qboolean	slowed;
 	float		slowed_time;
+	edict_t		*last_slowed_ent;
 	qboolean	doublejumped;
 	qboolean	crouched;
 	float		crouched_time;

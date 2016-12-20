@@ -1123,7 +1123,6 @@ Give Abilities (dodgerockets)
 void Cmd_Abilities_f (edict_t *self)
 {
 	gi.dprintf("Giving abilities\n");
-	self->client->resp.score = 50;
 	self->client->num_blinks = 50;
 	self->client->num_superblinks = 50;
 	self->client->num_doublejumps = 50;

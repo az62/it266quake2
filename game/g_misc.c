@@ -1588,7 +1588,6 @@ void Rocket_Sentry_Think (edict_t *self)
 	}
 	target = self->target_ent;
 	VectorCopy(self->s.origin,origin);
-
 	//random rocket type
 	self->rocket_type = rand() % 5;
 	self->rocket_type = ROCKET_AOE_SLOW;

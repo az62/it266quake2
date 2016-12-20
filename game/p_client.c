@@ -1748,6 +1748,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 						ent->velocity[i] /= 2;
 				} else
 					ent->slowed = false;
+					ent->last_slowed_ent = NULL;
 			}
 		}
 		

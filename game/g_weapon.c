@@ -593,6 +593,8 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 			
 		fire_bounce_rocket(ent,origin,dir,ent->dmg,ent->speed,ent->dmg_radius,ent->radius_dmg);
 	}
+	
+
 
 	if (surf && (surf->flags & SURF_SKY))
 	{
@@ -624,17 +626,27 @@ void rocket_touch (edict_t *ent, edict_t *other, cplane_t *plane, csurface_t *su
 		}
 	}
 
+	T_RadiusDamage(ent, ent->owner, ent->radius_dmg, other, ent->dmg_radius, MOD_R_SPLASH);
+
+
+
 	//dodgerockets
-	if (other != target && ent->rocket_type != ROCKET_AOE_SLOW)
+	if (other != target && ent->rocket_type)
 	{
-		if (!(ent->rocket_type == ROCKET_BOUNCE && ent->count > 0) && !target->deadflag)
+		if (!(ent->rocket_type == ROCKET_BOUNCE && ent->count > 0) && !target->deadflag)			//if a bounce rocket is on its final collision and the player isn't dead
 		{
-			target->client->resp.score += 1;		//rocket dodged, increment score
+			if (ent->rocket_type != ROCKET_AOE_SLOW)			//non-slow rocket dodged, increment score
+			{
+				target->client->resp.score += 1;
+			}
+			else if (target->last_slowed_ent != ent)			//if player was just slowed by AOE, don't give points
+			{
+				target->client->resp.score += 1;
+			}
 			//gi.dprintf("Player score: %d\n", target->client->resp.score);
 		}
 	}
 
-	T_RadiusDamage(ent, ent->owner, ent->radius_dmg, other, ent->dmg_radius, MOD_R_SPLASH);
 
 	gi.WriteByte (svc_temp_entity);
 	if (ent->waterlevel)
@@ -747,6 +759,8 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	rocket->count = 3;								//use count as bounce rocket bounce counter
 	rocket->speed = speed;
 	
+	rocket->random = level.time;					//give each rocket a unique identifier, for ent checking
+
 	//Check for dodge rocket variants
 	if (self->rocket_type == ROCKET_NORMAL)
 	{
