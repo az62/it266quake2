@@ -1104,8 +1104,8 @@ void PutClientInServer (edict_t *ent)
 	int		i;
 	client_persistant_t	saved;
 	client_respawn_t	resp;
-
-
+	edict_t	*e;
+	
 	// find a spawn point
 	// do it before setting health back up, so farthest
 	// ranging doesn't count this client
@@ -1262,6 +1262,24 @@ void PutClientInServer (edict_t *ent)
 	client->num_doublejumps = 0;
 	client->num_wallclimbs = 0;
 	client->num_superjumps = 0;
+	ent->max_sentries_firing = 3;
+
+	if (!ent->sentry_count)				//find sentries on first load
+	{	
+		ent->sentry_count = 0;
+		for (i=1, e=g_edicts+i ; i < globals.num_edicts ; i++,e++)
+		{
+			if(e->classname != "rocket_sentry")
+				continue;
+			e->sentry_id = ent->sentry_count;
+			if (ent->sentry_count == 0)				//fire first rocket
+			{
+				e->nextthink = level.time + 3;
+				ent->sentries_firing = 1;
+			}
+			ent->sentry_count++;
+		}
+	}
 }
 
 /*
@@ -1353,7 +1371,6 @@ void ClientBegin (edict_t *ent)
 			gi.bprintf (PRINT_HIGH, "%s entered the game\n", ent->client->pers.netname);
 		}
 	}
-
 	// make sure all view stuff is valid
 	ClientEndServerFrame (ent);
 }
@@ -1579,8 +1596,8 @@ usually be a couple times for each server frame.
 void ClientThink (edict_t *ent, usercmd_t *ucmd)
 {
 	gclient_t	*client;
-	edict_t	*other;
-	int		i, j;
+	edict_t	*other,*e;
+	int		i, j, random_id;
 	pmove_t	pm;
 
 	vec3_t		dest,origin,up,above;
@@ -1644,8 +1661,32 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 
 
+		///
+		/// dodgerockets
+		///
 
-		//dodgerockets
+		//gi.dprintf("Sentries firing = %d	|	Max sentries = %d\n", ent->sentries_firing, ent->max_sentries_firing);
+		//determine which sentry to fire
+		if (ent->sentries_firing < ent->max_sentries_firing)
+		{
+			random_id = rand() % 4;
+			for (i=1, e=g_edicts+i ; i < globals.num_edicts ; i++,e++)
+			{
+				if (e->classname != "rocket_sentry")
+					continue;
+				if (e->sentry_id == random_id)
+				{
+					if (!e->nextthink)
+					{
+						e->nextthink = level.time + 5;
+						ent->sentries_firing++;
+					}
+					break;
+				}
+			}
+		}
+		
+
 		if (ent->velocity[2] == 0 && ent->doublejumped == true)
 			ent->doublejumped = false;
 
@@ -1683,6 +1724,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		client->ps.pmove = pm.s;
 		client->old_pmove = pm.s;
 
+		
 		for (i=0 ; i<3 ; i++)
 		{
 			ent->s.origin[i] = pm.s.origin[i]*0.125;
@@ -1697,7 +1739,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 					ent->slowed = false;
 			}
 		}
-
+		
 
 
 

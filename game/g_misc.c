@@ -1557,14 +1557,14 @@ void SP_misc_gib_head (edict_t *ent)
 //Dodgerockets
 void SP_rocket_sentry (edict_t *ent)
 {
-	gi.dprintf("Called spawn function\n");
 	gi.setmodel (ent, "models/objects/barrels/tris.md2");
 	ent->solid = SOLID_NOT;
 	ent->s.effects |= EF_GIB;
 	ent->takedamage = DAMAGE_NO;
 	ent->movetype = MOVETYPE_NONE;
 	ent->think = Rocket_Sentry_Think;
-	ent->nextthink = level.time + 2;
+	//ent->nextthink = level.time + 2;
+	ent->classname = "rocket_sentry";
 	gi.linkentity (ent);
 }
 
@@ -1615,7 +1615,8 @@ void Rocket_Sentry_Think (edict_t *self)
 			gi.dprintf("Firing bounce rocket\n");
 		}
 	}
-	self->nextthink = level.time + 8;
+	target->sentries_firing--;
+	self->nextthink = 0;
 }
 
 

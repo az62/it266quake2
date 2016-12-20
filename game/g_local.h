@@ -1136,5 +1136,9 @@ struct edict_s
 	qboolean	wallclimbing;
 	vec3_t		wallclimb_pos;
 	vec3_t		wallclimb_dir;
+	int			sentry_count;
+	int			sentry_id;
+	int			sentries_firing;
+	int			max_sentries_firing;
 };
 

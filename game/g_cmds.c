@@ -939,10 +939,7 @@ void Cmd_Target_f (edict_t *self)
 	}
 
 	gi.dprintf("Target location: %f,%f,%f\n", tr.endpos[0], tr.endpos[1], tr.endpos[2]);
-	gi.dprintf("Surface Normal: %f,%f,%f\n", tr.plane.normal[0], tr.plane.normal[1], tr.plane.normal[2]);
-
-	
-
+	gi.dprintf("*****Random = %d", (rand()) % 4);
 }
 
 /*
@@ -981,7 +978,7 @@ void Cmd_Blink_f (edict_t *self)
 	
 	AngleVectors (self->client->v_angle, forward, right, up);
 	
-	if (self->crouched && level.time > self->crouched_time + 2.5)				//super blink
+	if (self->crouched && level.time > self->crouched_time + 1)				//super blink
 	{
 		if (self->client->num_superblinks == 0)
 			return;
@@ -1020,7 +1017,7 @@ void Cmd_Double_Jump_f (edict_t *self)
 	if (self->deadflag)
 		return;
 
-	if (self->client->num_superjumps > 0 && self->crouched && level.time > self->crouched_time + 2.5)			//charged jump
+	if (self->client->num_superjumps > 0 && self->crouched && level.time > self->crouched_time + 1)			//charged jump
 	{
 		self->doublejumped == true;		//don't allow doublejumping after charged jump
 		VectorCopy(self->velocity,velocity);
@@ -1120,6 +1117,22 @@ void Cmd_Wall_Climb_f (edict_t *self)
 
 /*
 =================
+Give Abilities (dodgerockets)
+=================
+*/
+void Cmd_Abilities_f (edict_t *self)
+{
+	gi.dprintf("Giving abilities\n");
+	self->client->resp.score = 50;
+	self->client->num_blinks = 50;
+	self->client->num_superblinks = 50;
+	self->client->num_doublejumps = 50;
+	self->client->num_wallclimbs = 50;
+	self->client->num_superjumps = 50;
+}
+
+/*
+=================
 ClientCommand
 =================
 */
@@ -1172,6 +1185,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_Double_Jump_f (ent);
 	else if (Q_stricmp (cmd, "wallclimb") == 0)
 		Cmd_Wall_Climb_f (ent);
+	else if (Q_stricmp (cmd, "abilities") == 0)
+		Cmd_Abilities_f (ent);
 
 	else if (Q_stricmp (cmd, "drop") == 0)
 		Cmd_Drop_f (ent);

@@ -2232,6 +2232,26 @@ tank commander's head
 		0,
 /* precache */ NULL
 	},
+	{
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL, 0,
+		NULL,
+/* icon */		NULL,
+/* pickup */	"Dodges",			//ui separator
+/* width */		3,
+		0,
+		NULL,
+		0,
+		0,
+		NULL,
+		0,
+/* precache */ NULL
+	},
 
 	// end of list marker
 	{NULL}

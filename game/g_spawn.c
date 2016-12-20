@@ -764,9 +764,9 @@ char *dm_statusbar =
 "endif "
 
 //  frags
-"xr	-50 "
-"yt 2 "
-"num 3 14 "
+//"xr	-50 "
+//"yt 2 "
+//"num 3 14 "
 
 // spectator
 "if 17 "
@@ -839,6 +839,17 @@ char *dm_statusbar =
 "yb -210 "
 "xr	-43 "
 "num 2	27 "
+
+//num dodges
+"yb	-590 "
+"xr	-50 "
+"stat_string 29 "
+"yb	-580 "
+"xr	-100 "
+"stat_string 28 "
+"yb -570 "
+"xr	-43 "
+"num 2	14 "
 ;
 
 

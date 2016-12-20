@@ -533,6 +533,7 @@ void G_SetStats (edict_t *ent)
 	ent->client->ps.stats[STAT_SUPERJUMPS] = ent->client->num_superjumps;
 	ent->client->ps.stats[STAT_SUPERJUMPS_STRING] = CS_ITEMS+ITEM_INDEX(FindItem("Super Jump"));
 	ent->client->ps.stats[STAT_SEPARATOR] = CS_ITEMS+ITEM_INDEX(FindItem("==============="));
+	ent->client->ps.stats[STAT_FRAGS_STRING] = CS_ITEMS+ITEM_INDEX(FindItem("Dodges"));
 	ent->client->ps.stats[STAT_SPECTATOR] = 0;
 }
 
