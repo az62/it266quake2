@@ -662,6 +662,11 @@ void homing_think (edict_t *ent)
 	VectorCopy(ent->s.origin,origin);
 	target = ent->owner->target_ent;
 
+	if(target->deadflag){
+		G_FreeEdict(ent);
+		return;
+	}
+
 	//determine player direction
 	VectorSubtract(target->s.origin,origin,dir);
 	VectorNormalize(dir);
@@ -686,6 +691,11 @@ void drunk_think (edict_t *ent)
 
 	VectorCopy(ent->s.origin,origin);
 	target = ent->owner->target_ent;
+
+	if(target->deadflag){
+		G_FreeEdict(ent);
+		return;
+	}
 
 	VectorSet(random,-1 + 2*random(),-1 + 2*random(),-1 + 2*random());
 

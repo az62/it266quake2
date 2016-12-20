@@ -1589,7 +1589,9 @@ void Rocket_Sentry_Think (edict_t *self)
 	target = self->target_ent;
 	VectorCopy(self->s.origin,origin);
 
-	self->rocket_type = ROCKET_NORMAL;
+	//random rocket type
+	self->rocket_type = rand() % 5;
+	self->rocket_type = ROCKET_AOE_SLOW;
 
 	//determine launch direction
 	//all rockets start firing directly at player
@@ -1616,7 +1618,7 @@ void Rocket_Sentry_Think (edict_t *self)
 		}
 	}
 	target->sentries_firing--;
-	self->nextthink = 0;
+	self->nextthink = 99999999999999;
 }
 
 

@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "m_player.h"
 
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
+void GiveReward (edict_t *ent);
 
 void SP_misc_teleporter_dest (edict_t *ent);
 
@@ -1262,21 +1263,22 @@ void PutClientInServer (edict_t *ent)
 	client->num_doublejumps = 0;
 	client->num_wallclimbs = 0;
 	client->num_superjumps = 0;
-	ent->max_sentries_firing = 3;
+	ent->max_sentries_firing = 1;
 
 	if (!ent->sentry_count)				//find sentries on first load
 	{	
 		ent->sentry_count = 0;
 		for (i=1, e=g_edicts+i ; i < globals.num_edicts ; i++,e++)
 		{
-			if(e->classname != "rocket_sentry")
+			if (e->classname != "rocket_sentry")
 				continue;
 			e->sentry_id = ent->sentry_count;
 			if (ent->sentry_count == 0)				//fire first rocket
 			{
 				e->nextthink = level.time + 3;
 				ent->sentries_firing = 1;
-			}
+			} else
+				e->nextthink = 0;
 			ent->sentry_count++;
 		}
 	}
@@ -1665,7 +1667,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		/// dodgerockets
 		///
 
-		//gi.dprintf("Sentries firing = %d	|	Max sentries = %d\n", ent->sentries_firing, ent->max_sentries_firing);
+
 		//determine which sentry to fire
 		if (ent->sentries_firing < ent->max_sentries_firing)
 		{
@@ -1676,7 +1678,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 					continue;
 				if (e->sentry_id == random_id)
 				{
-					if (!e->nextthink)
+					if (!e->nextthink || e->nextthink == 99999999999999)
 					{
 						e->nextthink = level.time + 5;
 						ent->sentries_firing++;
@@ -1685,11 +1687,19 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				}
 			}
 		}
-		
 
+		//score change handling
+		if (ent->client->old_score != ent->client->resp.score)
+		{
+			GiveReward(ent);
+			ent->client->old_score = ent->client->resp.score;
+		}
+		
+		//doublejump handling
 		if (ent->velocity[2] == 0 && ent->doublejumped == true)
 			ent->doublejumped = false;
 
+		//crouch charge handling
 		if (ent->crouched && level.time > ent->crouched_time + 1)
 			gi.centerprintf(ent,"====================\nAbilities charged!\n====================\n\n\n\n");
 
@@ -1705,7 +1715,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		else
 		{
 			//gi.dprintf("Uncrouched!\n");
-			gi.centerprintf(ent,"\n\n\n\n");
+			if (ent->crouched);
+				gi.centerprintf(ent,"\n\n\n\n");
 			ent->crouched = false;
 		}
 		//end dodgerockets
@@ -1917,3 +1928,38 @@ void ClientBeginServerFrame (edict_t *ent)
 
 	client->latched_buttons = 0;
 }
+
+/*
+==============
+GiveReward (Dodgerockets)
+
+Give ability points/increase difficulty as game progresses.
+==============
+*/
+void GiveReward (edict_t *ent)
+{
+	int			score;
+
+	score = ent->client->resp.score;
+
+	//difficulty ramping
+	if (score == 10 || score == 20 || score == 35 || score == 50 || score % 65 == 0)
+	{
+		if (ent->sentry_count != ent->max_sentries_firing)
+			ent->max_sentries_firing++;
+	}
+
+	//grant abilities
+	if (score % 10 == 0)
+		ent->client->num_blinks += 3;
+	if (score % 5 == 0 && score > 5)
+		ent->client->num_doublejumps += 2;
+	if (score % 17 == 0)
+		ent->client->num_wallclimbs += 2;
+	if (score % 20 == 0)
+	{
+		ent->client->num_superblinks++;
+		ent->client->num_superjumps++;
+	}
+}
+

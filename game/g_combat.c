@@ -561,6 +561,7 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 	edict_t *target;
 	vec3_t	v;
 	vec3_t	dir;
+	qboolean	hit_target;
 
 	target = inflictor->owner->target_ent;//dodgerockets
 
@@ -585,6 +586,11 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 			{
 				target->slowed = true;
 				target->slowed_time = level.time;
+				gi.centerprintf(target,"__/\\__\n");
+				gi.centerprintf(target,"\\_\\/_/\n");
+				gi.centerprintf(target,"/_/\\_\\\n");
+				gi.centerprintf(target,"\\/\n");
+				hit_target = true;
 			}
 		}
 		if (points >= 0)
@@ -596,4 +602,6 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 			}
 		}
 	}
+	if (!hit_target)
+		target->client->resp.score++;
 }

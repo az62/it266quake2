@@ -974,6 +974,7 @@ struct gclient_s
 	int			num_doublejumps;
 	int			num_wallclimbs;
 	int			num_superjumps;
+	int			old_score;
 };
 
 
