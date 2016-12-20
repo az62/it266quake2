@@ -1709,6 +1709,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			{
 				ent->crouched = true;
 				ent->crouched_time = level.time;
+				gi.sound (ent, CHAN_VOICE, gi.soundindex ("world/x_alarm.wav"), 1, ATTN_NORM, 0);
 				//gi.dprintf("Crouched time: %f\n", ent->crouched_time);
 			}
 		}
@@ -1745,10 +1746,17 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			{
 				if (level.time < ent->slowed_time + 4.5 + FRAMETIME){
 					if (i!=2)
+					{
 						ent->velocity[i] /= 2;
-				} else
+						gi.centerprintf(ent,"/\\\n__   \\/   __\n\\_\\_\\/\\/_/_/\n_\\_\\/_/_\n__/_/\\_\\__\n/_/ /\\/\\ \\_\\\n/\\\n\\/");
+					}
+				} else{
 					ent->slowed = false;
 					ent->last_slowed_ent = NULL;
+					gi.sound (ent, CHAN_VOICE, gi.soundindex ("misc/power1.wav"), 1, ATTN_NORM, 0);
+					gi.centerprintf(ent,"\n\n\n\n");
+				}
+
 			}
 		}
 		

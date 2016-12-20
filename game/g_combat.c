@@ -394,6 +394,7 @@ void T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir,
 			targ->slowed = true;
 			targ->slowed_time = level.time;
 			targ->last_slowed_ent = inflictor;
+			gi.sound (targ, CHAN_VOICE, gi.soundindex ("misc/power2.wav"), 1, ATTN_NORM, 0);
 		}
 	}
 
@@ -562,7 +563,6 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 	edict_t *target;
 	vec3_t	v;
 	vec3_t	dir;
-	qboolean	hit_target = false;
 
 	target = inflictor->owner->target_ent;//dodgerockets
 
@@ -588,11 +588,7 @@ void T_RadiusDamage (edict_t *inflictor, edict_t *attacker, float damage, edict_
 				target->slowed = true;
 				target->slowed_time = level.time;
 				target->last_slowed_ent = inflictor;
-				//gi.centerprintf(target,"__/\\__");
-				//gi.centerprintf(target,"\\_\\/_/\n");
-				//gi.centerprintf(target,"/_/\\_\\\n");
-				//gi.centerprintf(target,"\\/\n");
-				hit_target = true;
+				gi.sound (target, CHAN_VOICE, gi.soundindex ("misc/power2.wav"), 1, ATTN_NORM, 0);
 			}
 		}
 		if (points >= 0)

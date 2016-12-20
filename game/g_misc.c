@@ -1597,8 +1597,8 @@ void Rocket_Sentry_Think (edict_t *self)
 	VectorCopy(target->s.origin, dest);
 	VectorSubtract(dest,origin,dir);
 	VectorNormalize(dir);
-
-	if(!self->target_ent->deadflag){						//only fire if player hasn't lost
+	gi.sound (target, CHAN_WEAPON, gi.soundindex ("weapons/bfg__x1b.wav"), 1, ATTN_STATIC, 0);		//I like this one a lot
+	if(!self->target_ent->deadflag){						//only fire if player hasn't lost	
 		if (self->rocket_type == ROCKET_NORMAL){
 			fire_rocket(self,origin,dir,1000,300,20,2000);
 			gi.dprintf("Firing normal rocket\n");
