@@ -506,7 +506,7 @@ void G_SetStats (edict_t *ent)
 	//
 	// frags
 	//
-	ent->client->ps.stats[STAT_FRAGS] = 100;//ent->client->resp.score;
+	ent->client->ps.stats[STAT_FRAGS] = ent->client->resp.score;
 
 	//
 	// help icon / current weapon if not shown
@@ -524,6 +524,15 @@ void G_SetStats (edict_t *ent)
 	///
 	ent->client->ps.stats[STAT_BLINKS] = ent->client->num_blinks;
 	ent->client->ps.stats[STAT_BLINKS_STRING] = CS_ITEMS+ITEM_INDEX(FindItem("Blink"));
+	ent->client->ps.stats[STAT_SUPERBLINKS] = ent->client->num_superblinks;
+	ent->client->ps.stats[STAT_SUPERBLINKS_STRING] = CS_ITEMS+ITEM_INDEX(FindItem("Super Blink"));
+	ent->client->ps.stats[STAT_DOUBLEJUMPS] = ent->client->num_doublejumps;
+	ent->client->ps.stats[STAT_DOUBLEJUMPS_STRING] = CS_ITEMS+ITEM_INDEX(FindItem("Double Jump"));
+	ent->client->ps.stats[STAT_WALLCLIMBS] = ent->client->num_wallclimbs;
+	ent->client->ps.stats[STAT_WALLCLIMBS_STRING] = CS_ITEMS+ITEM_INDEX(FindItem("Wall Climb"));
+	ent->client->ps.stats[STAT_SUPERJUMPS] = ent->client->num_superjumps;
+	ent->client->ps.stats[STAT_SUPERJUMPS_STRING] = CS_ITEMS+ITEM_INDEX(FindItem("Super Jump"));
+	ent->client->ps.stats[STAT_SEPARATOR] = CS_ITEMS+ITEM_INDEX(FindItem("==============="));
 	ent->client->ps.stats[STAT_SPECTATOR] = 0;
 }
 

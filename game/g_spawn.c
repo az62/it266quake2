@@ -784,14 +784,61 @@ char *dm_statusbar =
   "stat_string 16 "
 "endif "
 
-// dodgerockets
-
+// dodgerockets //
 // num blinks
-"yb	-55 "
-"xr	-100 "
-"num 2	19 "
-"xr -50 "
+"yb	-430 "
+"xr	-41 "
 "stat_string 18 "
+"yb	-420 "
+"xr	-100 "
+"stat_string 28 "
+"yb -410 "
+"xr	-43 "
+"num 2	19 "
+
+// num superblinks
+"yb	-380 "
+"xr	-89 "
+"stat_string 20 "
+"yb -370 "
+"xr	-100 "
+"stat_string 28 "
+"yb -360 "
+"xr	-43 "
+"num 2	21 "
+
+// num doublejumps
+"yb	-330 "
+"xr	-90 "
+"stat_string 22 "
+"yb	-320 "
+"xr	-100 "
+"stat_string 28 "
+"yb -310 "
+"xr	-43 "
+"num 2	23 "
+
+// num wallclimbs
+"yb	-280 "
+"xr	-82 "
+"stat_string 24 "
+"yb	-270 "
+"xr	-100 "
+"stat_string 28 "
+"yb -260 "
+"xr	-43 "
+"num 2	25 "
+
+// num superjumps
+"yb	-230 "
+"xr	-82 "
+"stat_string 26 "
+"yb	-220 "
+"xr	-100 "
+"stat_string 28 "
+"yb -210 "
+"xr	-43 "
+"num 2	27 "
 ;
 
 

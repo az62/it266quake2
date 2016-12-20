@@ -1019,6 +1019,7 @@ typedef enum
 #define STAT_WALLCLIMBS			25
 #define STAT_SUPERJUMPS_STRING	26
 #define STAT_SUPERJUMPS			27
+#define STAT_SEPARATOR			28
 
 #define	MAX_STATS				32
 

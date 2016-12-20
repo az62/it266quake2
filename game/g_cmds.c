@@ -963,6 +963,9 @@ void Cmd_Blink_f (edict_t *self)
 	qboolean	water = false;
 	int			content_mask = MASK_SHOT | MASK_WATER;
 
+	if (self->deadflag)
+		return;
+
 	VectorCopy(self->s.origin, start);
 
 	tr = gi.trace (self->s.origin, NULL, NULL, start, self, MASK_SHOT);
@@ -980,6 +983,8 @@ void Cmd_Blink_f (edict_t *self)
 	
 	if (self->crouched && level.time > self->crouched_time + 2.5)				//super blink
 	{
+		if (self->client->num_superblinks == 0)
+			return;
 		VectorMA (start, 600, forward, end);
 		tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
 		VectorSet(blink, tr.endpos[0], tr.endpos[1], tr.endpos[2]);
@@ -988,6 +993,8 @@ void Cmd_Blink_f (edict_t *self)
 	} 
 	else																		//normal blink
 	{
+		if (self->client->num_blinks == 0)
+			return;
 		VectorMA (start, 200, forward, end);
 		tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
 		VectorSet(blink, tr.endpos[0], tr.endpos[1], self->s.origin[2]);
@@ -1010,7 +1017,10 @@ void Cmd_Double_Jump_f (edict_t *self)
 {
 	vec3_t			velocity;
 
-	if (self->crouched && level.time > self->crouched_time + 2.5)			//charged jump
+	if (self->deadflag)
+		return;
+
+	if (self->client->num_superjumps > 0 && self->crouched && level.time > self->crouched_time + 2.5)			//charged jump
 	{
 		self->doublejumped == true;		//don't allow doublejumping after charged jump
 		VectorCopy(self->velocity,velocity);
@@ -1028,14 +1038,16 @@ void Cmd_Double_Jump_f (edict_t *self)
 	VectorCopy(self->velocity,velocity);
 
 	if (velocity[2] != 0){			//in air
+		if (self->client->num_doublejumps == 0)
+			return;
 		VectorSet(velocity,velocity[0],velocity[1],500);
 		self->doublejumped = true;
+		self->client->num_doublejumps--;
+		G_SetStats(self);
 	} else {
 		VectorSet(velocity,velocity[0],velocity[1],300);
 	}
 	VectorCopy(velocity,self->velocity);
-	self->client->num_doublejumps--;
-	G_SetStats(self);
 }
 
 /*
@@ -1055,6 +1067,9 @@ void Cmd_Wall_Climb_f (edict_t *self)
 	vec3_t		water_start;
 	qboolean	water = false;
 	int			content_mask = MASK_SHOT | MASK_WATER;
+
+	if (self->client->num_wallclimbs == 0 && !self->deadflag)
+			return;
 
 	VectorCopy(self->s.origin, start);
 

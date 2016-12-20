@@ -1105,14 +1105,6 @@ void PutClientInServer (edict_t *ent)
 	client_persistant_t	saved;
 	client_respawn_t	resp;
 
-	//dodgerockets
-	ent->client->resp.score = 0;
-	ent->client->num_blinks = 0;
-	ent->client->num_superblinks = 0;
-	ent->client->num_doublejumps = 0;
-	ent->client->num_wallclimbs = 0;
-	ent->client->num_superjumps = 0;
-
 
 	// find a spawn point
 	// do it before setting health back up, so farthest
@@ -1164,7 +1156,7 @@ void PutClientInServer (edict_t *ent)
 	if (client->pers.health <= 0)
 		InitClientPersistant(client);
 	client->resp = resp;
-
+	
 	// copy some data from the client to the entity
 	FetchClientEntData (ent);
 
@@ -1195,7 +1187,7 @@ void PutClientInServer (edict_t *ent)
 
 	// clear playerstate values
 	memset (&ent->client->ps, 0, sizeof(client->ps));
-
+	
 	client->ps.pmove.origin[0] = spawn_origin[0]*8;
 	client->ps.pmove.origin[1] = spawn_origin[1]*8;
 	client->ps.pmove.origin[2] = spawn_origin[2]*8;
@@ -1256,12 +1248,20 @@ void PutClientInServer (edict_t *ent)
 	if (!KillBox (ent))
 	{	// could't spawn in?
 	}
-
+	
 	gi.linkentity (ent);
-
+	
 	// force the current weapon up
 	client->newweapon = client->pers.weapon;
 	ChangeWeapon (ent);
+	
+	//dodgerockets
+	client->resp.score = 0;
+	client->num_blinks = 0;
+	client->num_superblinks = 0;
+	client->num_doublejumps = 0;
+	client->num_wallclimbs = 0;
+	client->num_superjumps = 0;
 }
 
 /*
@@ -1649,8 +1649,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		if (ent->velocity[2] == 0 && ent->doublejumped == true)
 			ent->doublejumped = false;
 
-		if (ent->crouched && level.time > ent->crouched_time + 2.5)
-			gi.dprintf("Charged blink ready!\n");
+		if (ent->crouched && level.time > ent->crouched_time + 1)
+			gi.centerprintf(ent,"====================\nAbilities charged!\n====================\n\n\n\n");
 
 		if (ent->client->ps.pmove.pm_flags & PMF_DUCKED)
 		{
@@ -1664,6 +1664,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		else
 		{
 			//gi.dprintf("Uncrouched!\n");
+			gi.centerprintf(ent,"\n\n\n\n");
 			ent->crouched = false;
 		}
 		//end dodgerockets
