@@ -1599,8 +1599,11 @@ void Rocket_Sentry_Think (edict_t *self)
 	VectorCopy(target->s.origin, dest);
 	VectorSubtract(dest,origin,dir);
 	VectorNormalize(dir);
-	gi.sound (self, CHAN_VOICE, self->sounds, 1, ATTN_NORM, 0);		//I like this one a lot
-	if(!self->target_ent->deadflag){								//only fire if player hasn't lost	
+	
+	//fire a rocket
+	if(!self->target_ent->deadflag > 0)								//only fire if player hasn't lost
+	{
+		gi.sound (self, CHAN_VOICE, self->sounds, 1, ATTN_NORM, 0);
 		if (self->rocket_type == ROCKET_NORMAL){
 			fire_rocket(self,origin,dir,1000,800,20,2000);
 			gi.dprintf("Firing normal rocket\n");
@@ -1618,6 +1621,7 @@ void Rocket_Sentry_Think (edict_t *self)
 			gi.dprintf("Firing bounce rocket\n");
 		}
 	}
+
 	target->sentries_firing--;
 	self->nextthink = 99999999999999;
 }
