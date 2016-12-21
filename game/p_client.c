@@ -1258,11 +1258,11 @@ void PutClientInServer (edict_t *ent)
 	
 	//dodgerockets
 	client->resp.score = 0;
-	client->num_blinks = 0;
-	client->num_superblinks = 0;
-	client->num_doublejumps = 0;
-	client->num_wallclimbs = 0;
-	client->num_superjumps = 0;
+	client->num_blinks = 50;
+	client->num_superblinks = 50;
+	client->num_doublejumps = 50;
+	client->num_wallclimbs = 50;
+	client->num_superjumps = 50;
 	ent->max_sentries_firing = 1;
 
 	if (!ent->sentry_count)				//find sentries on first load
@@ -1689,11 +1689,11 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		}
 
 		//score change handling
-		if (ent->client->old_score != ent->client->resp.score)
+		/*if (ent->client->old_score != ent->client->resp.score)
 		{
 			GiveReward(ent);
 			ent->client->old_score = ent->client->resp.score;
-		}
+		}*/
 		
 		//doublejump handling
 		if (ent->velocity[2] == 0 && ent->doublejumped == true)

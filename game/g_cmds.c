@@ -985,7 +985,7 @@ void Cmd_Blink_f (edict_t *self)
 		VectorMA (start, 600, forward, end);
 		tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
 		VectorSet(blink, tr.endpos[0], tr.endpos[1], tr.endpos[2]);
-		self->client->num_superblinks--;
+		//self->client->num_superblinks--;
 		G_SetStats(self);
 	} 
 	else																		//normal blink
@@ -995,7 +995,7 @@ void Cmd_Blink_f (edict_t *self)
 		VectorMA (start, 200, forward, end);
 		tr = gi.trace (start, self->mins, self->maxs, end, self, content_mask);
 		VectorSet(blink, tr.endpos[0], tr.endpos[1], self->s.origin[2]);
-		self->client->num_blinks--;
+		//self->client->num_blinks--;
 		G_SetStats(self);
 	}
 	
@@ -1024,7 +1024,7 @@ void Cmd_Double_Jump_f (edict_t *self)
 		VectorSet(velocity,velocity[0],velocity[1],1000);
 		VectorCopy(velocity,self->velocity);
 
-		self->client->num_superjumps--;
+		//self->client->num_superjumps--;
 		G_SetStats(self);
 		return;
 	}
@@ -1039,7 +1039,7 @@ void Cmd_Double_Jump_f (edict_t *self)
 			return;
 		VectorSet(velocity,velocity[0],velocity[1],500);
 		self->doublejumped = true;
-		self->client->num_doublejumps--;
+		//self->client->num_doublejumps--;
 		G_SetStats(self);
 	} else {
 		VectorSet(velocity,velocity[0],velocity[1],300);
@@ -1108,12 +1108,43 @@ void Cmd_Wall_Climb_f (edict_t *self)
 		VectorSet(self->wallclimb_dir,wallclimbdir[0],wallclimbdir[1],300);
 		VectorCopy(self->wallclimb_dir,self->velocity);
 
-		self->client->num_wallclimbs--;
+		//self->client->num_wallclimbs--;
 		G_SetStats(self);
 	} else
 		gi.dprintf("Not close enough to a wall.\n");
 
 }
+
+void Cmd_Rocket_Type_f (edict_t *ent, char *cmd)
+{
+	edict_t			*e;
+	int				i;
+
+
+	if (ent->sentry_count)				//find sentries on first load
+	{	
+		gi.dprintf("Changing rocket type to: %s\n",cmd);
+
+		for (i=1, e=g_edicts+i ; i < globals.num_edicts ; i++,e++)
+		{
+			if (e->classname != "rocket_sentry")
+				continue;
+
+			if (Q_stricmp (cmd, "normal") == 0)
+				e->rocket_type = ROCKET_NORMAL;
+			else if (Q_stricmp (cmd, "homing") == 0)
+				e->rocket_type = ROCKET_HOMING;
+			else if (Q_stricmp (cmd, "slow") == 0)
+				e->rocket_type = ROCKET_AOE_SLOW;
+			else if (Q_stricmp (cmd, "drunk") == 0)
+				e->rocket_type = ROCKET_DRUNK;
+			else if (Q_stricmp (cmd, "bounce") == 0)
+				e->rocket_type = ROCKET_BOUNCE;
+
+		}
+	}
+}
+
 
 /*
 =================
@@ -1186,6 +1217,16 @@ void ClientCommand (edict_t *ent)
 		Cmd_Wall_Climb_f (ent);
 	else if (Q_stricmp (cmd, "abilities") == 0)
 		Cmd_Abilities_f (ent);
+	else if (Q_stricmp (cmd, "normal") == 0)
+		Cmd_Rocket_Type_f (ent, cmd);
+	else if (Q_stricmp (cmd, "homing") == 0)
+		Cmd_Rocket_Type_f (ent, cmd);
+	else if (Q_stricmp (cmd, "slow") == 0)
+		Cmd_Rocket_Type_f (ent, cmd);
+	else if (Q_stricmp (cmd, "drunk") == 0)
+		Cmd_Rocket_Type_f (ent, cmd);
+	else if (Q_stricmp (cmd, "bounce") == 0)
+		Cmd_Rocket_Type_f (ent, cmd);
 
 	else if (Q_stricmp (cmd, "drop") == 0)
 		Cmd_Drop_f (ent);

@@ -1566,6 +1566,7 @@ void SP_rocket_sentry (edict_t *ent)
 	//ent->nextthink = level.time + 2;
 	ent->classname = "rocket_sentry";
 	ent->sounds = gi.soundindex ("weapons/bfg__x1b.wav");
+	ent->rocket_type = ROCKET_NORMAL;
 	gi.linkentity (ent);
 }
 
@@ -1590,7 +1591,7 @@ void Rocket_Sentry_Think (edict_t *self)
 	target = self->target_ent;
 	VectorCopy(self->s.origin,origin);
 	//random rocket type
-	self->rocket_type = rand() % 5;
+	//self->rocket_type = rand() % 5;
 	//self->rocket_type = ROCKET_AOE_SLOW;
 
 	//determine launch direction
