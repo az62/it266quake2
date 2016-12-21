@@ -1588,6 +1588,10 @@ void Rocket_Sentry_Think (edict_t *self)
 		}
 	}
 	target = self->target_ent;
+
+	if(self->target_ent->deadflag)								//only fire if player hasn't lost
+		return;
+
 	VectorCopy(self->s.origin,origin);
 	//random rocket type
 	self->rocket_type = rand() % 5;
@@ -1598,24 +1602,24 @@ void Rocket_Sentry_Think (edict_t *self)
 	VectorCopy(target->s.origin, dest);
 	VectorSubtract(dest,origin,dir);
 	VectorNormalize(dir);
-	gi.sound (self, CHAN_VOICE, self->sounds, 1, ATTN_NORM, 0);		//I like this one a lot
-	if(!self->target_ent->deadflag){								//only fire if player hasn't lost	
-		if (self->rocket_type == ROCKET_NORMAL){
-			fire_rocket(self,origin,dir,1000,800,20,2000);
-			gi.dprintf("Firing normal rocket\n");
-		} else if (self->rocket_type == ROCKET_HOMING){
-			fire_rocket(self,origin,dir,1000,300,20,2000);
-			gi.dprintf("Firing homing rocket\n");
-		} else if (self->rocket_type == ROCKET_AOE_SLOW){
-			fire_rocket(self,origin,dir,0,600,200,0);
-			gi.dprintf("Firing aoe slow rocket\n");
-		} else if (self->rocket_type == ROCKET_DRUNK){
-			fire_rocket(self,origin,dir,1000,300,100,1000);
-			gi.dprintf("Firing drunken rocket\n");
-		} else if (self->rocket_type == ROCKET_BOUNCE){
-			fire_rocket(self,origin,dir,1000,300,20,1000);
-			gi.dprintf("Firing bounce rocket\n");
-		}
+	gi.sound (self, CHAN_VOICE, self->sounds, 1, ATTN_NORM, 0);
+	
+	//fire a rocket
+	if (self->rocket_type == ROCKET_NORMAL){
+		fire_rocket(self,origin,dir,1000,800,20,2000);
+		gi.dprintf("Firing normal rocket\n");
+	} else if (self->rocket_type == ROCKET_HOMING){
+		fire_rocket(self,origin,dir,1000,300,20,2000);
+		gi.dprintf("Firing homing rocket\n");
+	} else if (self->rocket_type == ROCKET_AOE_SLOW){
+		fire_rocket(self,origin,dir,0,600,200,0);
+		gi.dprintf("Firing aoe slow rocket\n");
+	} else if (self->rocket_type == ROCKET_DRUNK){
+		fire_rocket(self,origin,dir,1000,300,100,1000);
+		gi.dprintf("Firing drunken rocket\n");
+	} else if (self->rocket_type == ROCKET_BOUNCE){
+		fire_rocket(self,origin,dir,1000,300,20,1000);
+		gi.dprintf("Firing bounce rocket\n");
 	}
 	target->sentries_firing--;
 	self->nextthink = 99999999999999;
