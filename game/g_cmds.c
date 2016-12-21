@@ -999,8 +999,8 @@ void Cmd_Blink_f (edict_t *self)
 		G_SetStats(self);
 	}
 	
-	gi.dprintf("Blinking to: %f,%f,%f\nNumber of blinks: %d\n", blink[0], blink[1], blink[2], self->client->num_blinks);
-	gi.dprintf("");
+	//gi.dprintf("Blinking to: %f,%f,%f\nNumber of blinks: %d\n", blink[0], blink[1], blink[2], self->client->num_blinks);
+	//gi.dprintf("");
 	VectorCopy(blink,self->s.origin);
 
 }
