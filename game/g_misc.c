@@ -1599,9 +1599,9 @@ void Rocket_Sentry_Think (edict_t *self)
 	VectorSubtract(dest,origin,dir);
 	VectorNormalize(dir);
 	gi.sound (self, CHAN_VOICE, self->sounds, 1, ATTN_NORM, 0);		//I like this one a lot
-	if(!self->target_ent->deadflag){						//only fire if player hasn't lost	
+	if(!self->target_ent->deadflag){								//only fire if player hasn't lost	
 		if (self->rocket_type == ROCKET_NORMAL){
-			fire_rocket(self,origin,dir,1000,300,20,2000);
+			fire_rocket(self,origin,dir,1000,800,20,2000);
 			gi.dprintf("Firing normal rocket\n");
 		} else if (self->rocket_type == ROCKET_HOMING){
 			fire_rocket(self,origin,dir,1000,300,20,2000);
