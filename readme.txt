@@ -1,4 +1,15 @@
 
+// ===== INFORMATION FOR DODGEROCKETS MOD ===== //
+
+Proper play of the game requires 3 binds. The binds and their recommended keys are as follows:
+
+bind q cmd blink
+bind e cmd wallclimb
+bind space cmd doublejump
+
+// ============================================ //
+
+
 This is the complete source code for Quake 2, version 3.19, buildable with
 visual C++ 6.0.  The linux version should be buildable, but we haven't
 tested it for the release.
