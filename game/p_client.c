@@ -1716,8 +1716,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		else
 		{
 			//gi.dprintf("Uncrouched!\n");
-			if (ent->crouched);
-				gi.centerprintf(ent,"\n\n\n\n");
+			//if (ent->crouched);
+			//	gi.centerprintf(ent,"\n\n\n\n");
 			ent->crouched = false;
 		}
 		//end dodgerockets
@@ -1748,13 +1748,13 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 					if (i!=2)
 					{
 						ent->velocity[i] /= 2;
-						gi.centerprintf(ent,"/\\\n__   \\/   __\n\\_\\_\\/\\/_/_/\n_\\_\\/_/_\n__/_/\\_\\__\n/_/ /\\/\\ \\_\\\n/\\\n\\/");
+						//gi.centerprintf(ent,"/\\\n__   \\/   __\n\\_\\_\\/\\/_/_/\n_\\_\\/_/_\n__/_/\\_\\__\n/_/ /\\/\\ \\_\\\n/\\\n\\/");
 					}
 				} else{
 					ent->slowed = false;
 					ent->last_slowed_ent = NULL;
 					gi.sound (ent, CHAN_VOICE, gi.soundindex ("misc/power1.wav"), 1, ATTN_NORM, 0);
-					gi.centerprintf(ent,"\n\n\n\n");
+					//gi.centerprintf(ent,"\n\n\n\n");
 				}
 
 			}

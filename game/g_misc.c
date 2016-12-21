@@ -1565,6 +1565,7 @@ void SP_rocket_sentry (edict_t *ent)
 	ent->think = Rocket_Sentry_Think;
 	//ent->nextthink = level.time + 2;
 	ent->classname = "rocket_sentry";
+	ent->sounds = gi.soundindex ("weapons/bfg__x1b.wav");
 	gi.linkentity (ent);
 }
 
@@ -1590,14 +1591,14 @@ void Rocket_Sentry_Think (edict_t *self)
 	VectorCopy(self->s.origin,origin);
 	//random rocket type
 	self->rocket_type = rand() % 5;
-	self->rocket_type = ROCKET_AOE_SLOW;
+	//self->rocket_type = ROCKET_AOE_SLOW;
 
 	//determine launch direction
 	//all rockets start firing directly at player
 	VectorCopy(target->s.origin, dest);
 	VectorSubtract(dest,origin,dir);
 	VectorNormalize(dir);
-	gi.sound (target, CHAN_WEAPON, gi.soundindex ("weapons/bfg__x1b.wav"), 1, ATTN_STATIC, 0);		//I like this one a lot
+	gi.sound (self, CHAN_VOICE, self->sounds, 1, ATTN_NORM, 0);		//I like this one a lot
 	if(!self->target_ent->deadflag){						//only fire if player hasn't lost	
 		if (self->rocket_type == ROCKET_NORMAL){
 			fire_rocket(self,origin,dir,1000,300,20,2000);
