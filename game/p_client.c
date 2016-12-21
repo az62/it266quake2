@@ -1268,6 +1268,7 @@ void PutClientInServer (edict_t *ent)
 	if (!ent->sentry_count)				//find sentries on first load
 	{	
 		ent->sentry_count = 0;
+		gi.centerprintf(ent, "Make sure you set your keybinds!\nSee 'readme.txt' in the source folder."); //first load only
 		for (i=1, e=g_edicts+i ; i < globals.num_edicts ; i++,e++)
 		{
 			if (e->classname != "rocket_sentry")
