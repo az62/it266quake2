@@ -1,3 +1,22 @@
+****Dodgerockets mod info****
+"The Edge" has been modified to include 4 rocket sentries in the main area of the map.
+The sentries fire rockets aimed at the player's location, with the rockets having random types:
+  - A normal rocket
+  - A very fast rocket that needs quick reflexes to dodge
+  - A freeze rocket that slows the player if caught in its AOE
+  - A homing rocket that smoothly follows the player until it collides with the player or the map
+  - A 'drunken' homing rocket that tries its best to follow the player, but not very well
+  
+Additionally, the player will receive tokens every certain amount of dodges to use various abilities:
+  - Short range, horizontal blink
+  - Double jump
+  - Wallclimb ability
+  - Longer range, free aim "charged" blink
+  - "Charged" super jump
+  
+  
+****End mod info****
+
 
 This is the complete source code for Quake 2, version 3.19, buildable with
 visual C++ 6.0.  The linux version should be buildable, but we haven't
